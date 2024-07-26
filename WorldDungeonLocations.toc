@@ -1,0 +1,10 @@
+## Interface: 110000
+## Title: WorldDungeonLocations
+## Notes: Shows Blizzard's dungeon and raid locations on the world map
+## Version: 1.0.0
+## OptionalDeps: _DebugLog
+## Author: Belazor
+## Author: Belazor
+## Version: @project-version@
+
+DataProvider.lua
