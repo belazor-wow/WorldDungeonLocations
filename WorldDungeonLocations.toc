@@ -1,11 +1,17 @@
 ## Interface: 110000
 ## Title: WorldDungeonLocations
 ## Notes: Shows Blizzard's dungeon and raid locations on the world map
-## Version: 1.0.0
 ## OptionalDeps: _DebugLog
-## Author: Belazor
+## IconTexture: 255344
 ## Author: Belazor
 ## Version: @project-version@
+## X-Curse-Project-ID: 
+## X-WoWI-ID: 
+## X-Wago-ID: 
+## X-Source-URL: https://github.com/belazor-wow/WorldDungeonLocations
+## X-Issues-URL: https://github.com/belazor-wow/WorldDungeonLocations/issues
 
 WorldDungeonLocations.lua
 DataProvider.xml
+
+Debug.lua
