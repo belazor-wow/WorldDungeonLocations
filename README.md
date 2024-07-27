@@ -1,3 +1,7 @@
 # WorldDungeonLocations
 
-WorldDungeonLocations shows location map pins on the world map as well as the zone map.
+WorldDungeonLocations shows dungeon and raid location map pins on the world map as well as the zone map. Clicking on a dungeon or raid pin will take you to the zone map, where you can "Supertrack" them or open the Encounter Journal.
+
+### Features:
+- Adds the new Dungeon / Raid Location pins to the world map
+- Shows dungeon/raid lockout status in the tooltip
