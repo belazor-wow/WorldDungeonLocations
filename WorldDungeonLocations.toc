@@ -7,4 +7,5 @@
 ## Author: Belazor
 ## Version: @project-version@
 
-DataProvider.lua
+WorldDungeonLocations.lua
+DataProvider.xml

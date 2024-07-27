@@ -1,3 +1,5 @@
+local private = select(2, ...) ---@class PrivateNamespace
+
 -- remove the default provider
 for dp in next, WorldMapFrame.dataProviders do
 	if dp.cvar and dp.cvar == 'showDungeonEntrancesOnMap' then
@@ -17,20 +19,20 @@ function WorldDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID
 		_, dungeonInfo.position = C_Map.GetMapPosFromWorldPos(continentID, worldPos, parentMapID)
 		end
 
-		local pin = self:GetMap():AcquirePin('DungeonEntrancePinTemplate', dungeonInfo)
+		local pin = self:GetMap():AcquirePin('WorldDungeonEntrancePinTemplate', dungeonInfo)
 		pin.dataProvider = self
 		pin:UpdateSupertrackedHighlight()
 	end
 end
 
 function WorldDungeonEntranceDataProviderMixin:OnSuperTrackingChanged()
-	for pin in self:GetMap():EnumeratePinsByTemplate("DungeonEntrancePinTemplate") do
+	for pin in self:GetMap():EnumeratePinsByTemplate("WorldDungeonEntrancePinTemplate") do
 		pin:UpdateSupertrackedHighlight();
 	end
 end
 
 function WorldDungeonEntranceDataProviderMixin:RemoveAllData()
-	self:GetMap():RemoveAllPinsByTemplate("DungeonEntrancePinTemplate");
+	self:GetMap():RemoveAllPinsByTemplate("WorldDungeonEntrancePinTemplate");
 end
 
 function WorldDungeonEntranceDataProviderMixin:RefreshAllData()
