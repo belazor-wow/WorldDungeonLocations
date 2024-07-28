@@ -6,7 +6,8 @@ local function UpdateSavedInstances()
     for i = 1, GetNumSavedInstances() do
         local name, _, _, _, locked, _, _, _, _, difficultyName, numEncounters, encounterProgress, _, journalInstanceID = GetSavedInstanceInfo(i)
         if locked then
-            -- print(name, difficultyName, numEncounters, encounterProgress, journalInstanceID)
+            private.Debug(name, difficultyName, numEncounters, encounterProgress, journalInstanceID);
+
             if not private.savedInstances[journalInstanceID] then
                 private.savedInstances[journalInstanceID] = { }
             end
