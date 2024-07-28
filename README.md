@@ -5,3 +5,6 @@ WorldDungeonLocations shows dungeon and raid location map pins on the world map 
 ### Features:
 - Adds the new Dungeon / Raid Location pins to the world map
 - Shows dungeon/raid lockout status in the tooltip
+
+### Credits:
+- [p3lim](https://github.com/p3lim-wow/) for writing the original pin code
