@@ -5,7 +5,7 @@
 ## IconTexture: 255344
 ## Author: Belazor
 ## Version: @project-version@
-## X-Curse-Project-ID: 
+## X-Curse-Project-ID: 1073129
 ## X-WoWI-ID: 
 ## X-Wago-ID: 
 ## X-Source-URL: https://github.com/belazor-wow/WorldDungeonLocations
