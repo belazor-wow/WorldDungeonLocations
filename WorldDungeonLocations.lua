@@ -3,7 +3,7 @@ private.savedInstances = {}
 
 local function UpdateSavedInstances()
     table.wipe(private.savedInstances)
-    for i = 1,GetNumSavedInstances() do
+    for i = 1, GetNumSavedInstances() do
         local name, _, _, _, locked, _, _, _, _, difficultyName, numEncounters, encounterProgress, _, journalInstanceID = GetSavedInstanceInfo(i)
         if locked then
             -- print(name, difficultyName, numEncounters, encounterProgress, journalInstanceID)
@@ -21,9 +21,9 @@ function WDE:OnEvent(event, ...)
 	self[event](self, event, ...)
 end
 
-function WDE:PLAYER_ENTERING_WORLD()
+function WDE:UPDATE_INSTANCE_INFO()
     UpdateSavedInstances()
 end
 
-WDE:RegisterEvent("PLAYER_ENTERING_WORLD")
+WDE:RegisterEvent("UPDATE_INSTANCE_INFO")
 WDE:SetScript("OnEvent", WDE.OnEvent)
