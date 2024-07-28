@@ -6,7 +6,7 @@
 ## Author: Belazor
 ## Version: @project-version@
 ## X-Curse-Project-ID: 1073129
-## X-WoWI-ID: 
+## X-WoWI-ID: 26785
 ## X-Wago-ID: nGvpx06x
 ## X-Source-URL: https://github.com/belazor-wow/WorldDungeonLocations
 ## X-Issues-URL: https://github.com/belazor-wow/WorldDungeonLocations/issues
