@@ -22,9 +22,14 @@ function WDE:OnEvent(event, ...)
 	self[event](self, event, ...)
 end
 
+function WDE:BOSS_KILL()
+    RequestRaidInfo()
+end
+
 function WDE:UPDATE_INSTANCE_INFO()
     UpdateSavedInstances()
 end
 
+WDE:RegisterEvent("BOSS_KILL")
 WDE:RegisterEvent("UPDATE_INSTANCE_INFO")
 WDE:SetScript("OnEvent", WDE.OnEvent)
