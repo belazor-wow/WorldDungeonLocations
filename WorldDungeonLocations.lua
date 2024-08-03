@@ -3,10 +3,12 @@ private.savedInstances = {}
 
 private.mapOverrides = {
     [36] = {
+        -- ["comboName"] = "BWL / UBRS / LBRS / BRD / MC",
         ["position"] = {x = 0.21056824922562, y = 0.38353234529495},
         ["childMapIds"] = {33, 35}
     },
     [32] = {
+        -- ["comboName"] = "BWL / UBRS / LBRS / BRD / MC",
         ["position"] = {x = 0.3478, y = 0.8392},
         ["childMapIds"] = {33, 35}
     },

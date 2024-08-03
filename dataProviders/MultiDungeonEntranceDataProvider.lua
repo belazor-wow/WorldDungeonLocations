@@ -22,12 +22,14 @@ function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData(fromOnShow)
     local mapID = map:GetMapID();
     local mapOverrideInfo = private.mapOverrides[mapID] or {}
     local combinedEntranceInfo = {}
+    local instanceNames = {}
 
     for _, childMapId in ipairs(mapOverrideInfo.childMapIds) do
         local dungeonEntrances = C_EncounterJournal.GetDungeonEntrancesForMap(childMapId);
 
         for _, dungeonEntranceInfo in ipairs(dungeonEntrances) do
             table.insert(combinedEntranceInfo, dungeonEntranceInfo);
+            table.insert(instanceNames, dungeonEntranceInfo.name)
         end
     end
 
@@ -36,8 +38,8 @@ function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData(fromOnShow)
     if #combinedEntranceInfo then
         local poiInfo = {
             atlasName = "Raid",
-            name = mapName,
-            description = "Test",
+            name = mapOverrideInfo.comboName or mapName,
+            --description = string.join(', ', unpack(instanceNames)),
             isAlwaysOnFlightmap = false,
             shouldGlow = false,
             isPrimaryMapForPOI = true,
@@ -71,8 +73,40 @@ function WDLMultiDungeonEntrancePinMixin:UseTooltip()
     return true;
 end
 
-function WDLMultiDungeonEntrancePinMixin:GetFallbackName()
-    return DUNGEON_MAP_PIN_FALLBACK_NAME;
+function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
+	if self:UseTooltip() then
+		local tooltip = GetAppropriateTooltip();
+		tooltip:SetOwner(self, "ANCHOR_RIGHT");
+		local name, description = self:GetBestNameAndDescription();
+		GameTooltip_SetTitle(tooltip, name);
+
+		if description then
+			GameTooltip_AddNormalLine(tooltip, description);
+		end
+
+        for _, dungeonEntranceInfo in ipairs(self.dungeonEntranceInfo) do
+            local _, _, _, _, _, _, _, _, _, instanceId, isRaid = EJ_GetInstanceInfo(dungeonEntranceInfo.journalInstanceID);
+
+            if private.savedInstances[instanceId] ~= nil then
+                GameTooltip_AddBlankLineToTooltip(tooltip)
+                tooltip:AddDoubleLine(dungeonEntranceInfo.name, isRaid and MAP_LEGEND_RAID or MAP_LEGEND_DUNGEON)
+
+                GameTooltip_AddNormalLine(tooltip, dungeonEntranceInfo.name)
+                for key, value in pairs(private.savedInstances[instanceId]) do
+                    tooltip:AddDoubleLine("|cffffffee" .. key .. "|r", value)
+                end
+            else
+                tooltip:AddDoubleLine(dungeonEntranceInfo.name, isRaid and MAP_LEGEND_RAID or MAP_LEGEND_DUNGEON)
+            end
+        end
+
+		local instructionLine = self:GetTooltipInstructions();
+		if instructionLine then
+			GameTooltip_AddInstructionLine(tooltip, instructionLine, false);
+		end
+
+		tooltip:Show();
+	end
 end
 
 function WDLMultiDungeonEntrancePinMixin:OnAcquired(poiInfo, multiDungeonEntranceInfo, multiDungeonMapOverrideInfo)
