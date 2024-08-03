@@ -1,6 +1,17 @@
 local private = select(2, ...) ---@class PrivateNamespace
 private.savedInstances = {}
 
+private.mapOverrides = {
+    [36] = {
+        ["position"] = CreateVector2D(20.98, 38.12),
+        ["childMapIds"] = {33, 35}
+    },
+    [32] = {
+        ["position"] = CreateVector2D(34.78, 83.92),
+        ["childMapIds"] = {33, 35}
+    },
+}
+
 local function UpdateSavedInstances()
     table.wipe(private.savedInstances)
     for i = 1, GetNumSavedInstances() do
@@ -19,7 +30,7 @@ end
 local WDL = CreateFrame("Frame")
 
 function WDL:OnEvent(event, ...)
-	self[event](self, event, ...)
+    self[event](self, event, ...)
 end
 
 function WDL:BOSS_KILL()
