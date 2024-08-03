@@ -1,32 +1,10 @@
 local private = select(2, ...) ---@class PrivateNamespace
 
-WDLMultiDungeonEntranceDataProviderMixin = CreateFromMixins(CVarMapCanvasDataProviderMixin);
+local WDLMultiDungeonEntranceDataProviderMixin = CreateFromMixins(CVarMapCanvasDataProviderMixin);
 WDLMultiDungeonEntranceDataProviderMixin:Init("showDungeonEntrancesOnMap");
 
 function WDLMultiDungeonEntranceDataProviderMixin:GetPinTemplate()
     return "WDLMultiDungeonEntrancePinTemplate";
-end
-
-function WDLMultiDungeonEntranceDataProviderMixin:OnAdded(mapCanvas)
-    MapCanvasDataProviderMixin.OnAdded(self, mapCanvas);
-    mapCanvas:SetPinTemplateType(self:GetPinTemplate(), "BUTTON");
-end
-
-function WDLMultiDungeonEntranceDataProviderMixin:OnShow()
-    CVarMapCanvasDataProviderMixin.OnShow(self);
-    EventRegistry:RegisterCallback("Supertracking.OnChanged", self.OnSuperTrackingChanged, self);
-end
-
-function WDLMultiDungeonEntranceDataProviderMixin:OnHide()
-    CVarMapCanvasDataProviderMixin.OnHide(self);
-    EventRegistry:UnregisterCallback("Supertracking.OnChanged", self);
-end
-
-
-function WDLMultiDungeonEntranceDataProviderMixin:OnSuperTrackingChanged()
-    for pin in self:GetMap():EnumeratePinsByTemplate(self:GetPinTemplate()) do
-        pin:UpdateSupertrackedHighlight();
-    end
 end
 
 function WDLMultiDungeonEntranceDataProviderMixin:RemoveAllData()
@@ -53,27 +31,26 @@ function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData(fromOnShow)
         end
     end
 
+    local mapName = C_Map.GetMapInfo(mapID).name
+
     if #combinedEntranceInfo then
         local poiInfo = {
             atlasName = "Raid",
-            name = map.name,
+            name = mapName,
             description = "Test",
-            poiID = 6638,
-            isAlawysOnFlightmap = false,
+            isAlwaysOnFlightmap = false,
             shouldGlow = false,
             isPrimaryMapForPOI = true,
-            position = mapOverrideInfo.position
+            position = CreateVector2D(mapOverrideInfo.position.x, mapOverrideInfo.position.y),
+            dataProvider = WDLMultiDungeonEntranceDataProviderMixin
         };
 
-        local pin = map:AcquirePin(self:GetPinTemplate(), combinedEntranceInfo, poiInfo);
-        pin.dataProvider = self;
-        pin:UpdateSupertrackedHighlight();
-        DevTools_Dump(pin)
+        map:AcquirePin(self:GetPinTemplate(), poiInfo, combinedEntranceInfo, mapOverrideInfo);
     end
 end
 
 --[[ Pin ]]--
-WDLMultiDungeonEntrancePinMixin = BaseMapPoiPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DUNGEON_ENTRANCE");
+WDLMultiDungeonEntrancePinMixin = BaseMapPoiPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DUNGEON_ENTRANCE");    --PIN_FRAME_LEVEL_WORLD_QUEST, PIN_FRAME_LEVEL_VIGNETTE
 
 function WDLMultiDungeonEntrancePinMixin:OnLoad()
     BaseMapPoiPinMixin.OnLoad(self);
@@ -82,16 +59,12 @@ function WDLMultiDungeonEntrancePinMixin:OnLoad()
     self:SetNudgeSourceMagnitude(2, 2);
 end
 
-function WDLMultiDungeonEntrancePinMixin:OnAcquired(multiDungeonEntranceInfo, poiInfo) -- override
-    SuperTrackablePoiPinMixin.OnAcquired(self, poiInfo);
-
-    self.dungeonEntranceInfo = multiDungeonEntranceInfo;
+function WDLMultiDungeonEntrancePinMixin:OnMouseLeave()
+    BaseMapPoiPinMixin.OnMouseLeave(self);
 end
 
-function WDLMultiDungeonEntrancePinMixin:ShouldMouseButtonBePassthrough(button)
-    -- Dungeon entrances allow left click to super track and right click to open journal.
-    -- Other buttons don't matter at this time.
-    return false;
+function WDLMultiDungeonEntrancePinMixin:OnMouseEnter()
+    BaseMapPoiPinMixin.OnMouseEnter(self);
 end
 
 function WDLMultiDungeonEntrancePinMixin:UseTooltip()
@@ -102,24 +75,34 @@ function WDLMultiDungeonEntrancePinMixin:GetFallbackName()
     return DUNGEON_MAP_PIN_FALLBACK_NAME;
 end
 
-function WDLMultiDungeonEntrancePinMixin:GetTooltipInstructions()
-    return DUNGEON_POI_TOOLTIP_INSTRUCTION_LINE;
+function WDLMultiDungeonEntrancePinMixin:OnAcquired(poiInfo, multiDungeonEntranceInfo, multiDungeonMapOverrideInfo)
+    self.poiInfo = poiInfo;
+    self.name = poiInfo.name;
+    self.description = poiInfo.description;
+    self.tooltipWidgetSet = poiInfo.tooltipWidgetSet;
+    self.iconWidgetSet = poiInfo.iconWidgetSet;
+    self.textureKit = poiInfo.uiTextureKit;
+
+    self:SetDataProvider(poiInfo.dataProvider);
+    self:SetTexture(poiInfo);
+    self:SetPosition(poiInfo.position:GetXY());
+
+    self.Texture:SetTexture("Interface\\AddOns\\WorldDungeonLocations\\Textures\\dungeon-raid");
+
+    self:SetSize(42, 42);
+    self.Texture:SetSize(42, 42);
+
+    self.dungeonEntranceInfo = multiDungeonEntranceInfo;
+    self.mapOverrideInfo = multiDungeonMapOverrideInfo;
 end
 
 function WDLMultiDungeonEntrancePinMixin:OnMouseClickAction(button)
-    SuperTrackablePinMixin.OnMouseClickAction(self, button);
-end
+    if InCombatLockdown() then return end
 
-function WDLMultiDungeonEntrancePinMixin:GetHighlightType() -- override
-    if QuestSuperTracking_ShouldHighlightDungeons(self:GetMap():GetMapID()) then
-        return MapPinHighlightType.SupertrackedHighlight;
+    if button == "LeftButton" then
+        WorldMapFrame:SetMapID(self.mapOverrideInfo.childMapIds[1])
     end
-
-    return MapPinHighlightType.None;
 end
 
-function WDLMultiDungeonEntrancePinMixin:UpdateSupertrackedHighlight()
-    MapPinHighlight_CheckHighlightPin(self:GetHighlightType(), self, self.Texture);
-end
 
-WorldMapFrame:AddDataProvider(CreateFromMixins(WDLMultiDungeonEntranceDataProviderMixin))
+WorldMapFrame:AddDataProvider(WDLMultiDungeonEntranceDataProviderMixin);

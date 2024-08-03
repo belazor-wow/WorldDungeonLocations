@@ -3,11 +3,11 @@ private.savedInstances = {}
 
 private.mapOverrides = {
     [36] = {
-        ["position"] = CreateVector2D(20.98, 38.12),
+        ["position"] = {x = 0.21056824922562, y = 0.38353234529495},
         ["childMapIds"] = {33, 35}
     },
     [32] = {
-        ["position"] = CreateVector2D(34.78, 83.92),
+        ["position"] = {x = 0.3478, y = 0.8392},
         ["childMapIds"] = {33, 35}
     },
 }
