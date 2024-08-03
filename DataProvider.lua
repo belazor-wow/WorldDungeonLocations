@@ -11,6 +11,10 @@ end
 local WorldDungeonEntranceDataProviderMixin = CreateFromMixins(DungeonEntranceDataProviderMixin)
 WorldDungeonEntranceDataProviderMixin:Init('showDungeonEntrancesOnMap')
 
+function WorldDungeonEntranceDataProviderMixin:GetPinTemplate()
+	return "WorldDungeonEntrancePinTemplate";
+end
+
 function WorldDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID)
     for _, dungeonInfo in next, C_EncounterJournal.GetDungeonEntrancesForMap(mapID) do
         if parentMapID then
@@ -19,20 +23,20 @@ function WorldDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID
             _, dungeonInfo.position = C_Map.GetMapPosFromWorldPos(continentID, worldPos, parentMapID)
         end
 
-        local pin = self:GetMap():AcquirePin('WorldDungeonEntrancePinTemplate', dungeonInfo)
+        local pin = self:GetMap():AcquirePin(self:GetPinTemplate(), dungeonInfo)
         pin.dataProvider = self
         pin:UpdateSupertrackedHighlight()
     end
 end
 
 function WorldDungeonEntranceDataProviderMixin:OnSuperTrackingChanged()
-    for pin in self:GetMap():EnumeratePinsByTemplate("WorldDungeonEntrancePinTemplate") do
+    for pin in self:GetMap():EnumeratePinsByTemplate(self:GetPinTemplate()) do
         pin:UpdateSupertrackedHighlight();
     end
 end
 
 function WorldDungeonEntranceDataProviderMixin:RemoveAllData()
-    self:GetMap():RemoveAllPinsByTemplate("WorldDungeonEntrancePinTemplate");
+    self:GetMap():RemoveAllPinsByTemplate(self:GetPinTemplate());
 end
 
 function WorldDungeonEntranceDataProviderMixin:RefreshAllData()
