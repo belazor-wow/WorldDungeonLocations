@@ -1,15 +1,15 @@
 local private = select(2, ...) ---@class PrivateNamespace
 
 -- Create new dungeon entrance pin mixin
-WDEDungeonEntrancePinMixin = CreateFromMixins(DungeonEntrancePinMixin)
+WDLDungeonEntrancePinMixin = CreateFromMixins(DungeonEntrancePinMixin)
 
-function WDEDungeonEntrancePinMixin:UpdateMousePropagation()
+function WDLDungeonEntrancePinMixin:UpdateMousePropagation()
     if not InCombatLockdown() then
         self:SetPropagateMouseClicks(not self:DoesMapTypeAllowSuperTrack());
     end
 end
 
-function WDEDungeonEntrancePinMixin:CheckShowTooltip()
+function WDLDungeonEntrancePinMixin:CheckShowTooltip()
 	if self:UseTooltip() then
         local instanceId = select(10, EJ_GetInstanceInfo(self.journalInstanceID))
 

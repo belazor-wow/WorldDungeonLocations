@@ -3,7 +3,7 @@
     <Script file="PinMixin.lua"/>
     <Script file="DataProvider.lua"/>
 
-    <Frame name="WorldDungeonEntrancePinTemplate" inherits="LegendHighlightableMapPoiPinTemplate, BaseSuperTrackableMapPoiPinTemplate" enableMouseClicks="true" mixin="WDEDungeonEntrancePinMixin" virtual="true">
+    <Frame name="WorldDungeonEntrancePinTemplate" inherits="LegendHighlightableMapPoiPinTemplate, BaseSuperTrackableMapPoiPinTemplate" enableMouseClicks="true" mixin="WDLDungeonEntrancePinMixin" virtual="true">
         <Scripts>
             <OnLoad method="OnLoad"/>
         </Scripts>

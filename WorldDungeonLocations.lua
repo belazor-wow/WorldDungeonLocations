@@ -16,20 +16,20 @@ local function UpdateSavedInstances()
     end
 end
 
-local WDE = CreateFrame("Frame")
+local WDL = CreateFrame("Frame")
 
-function WDE:OnEvent(event, ...)
+function WDL:OnEvent(event, ...)
 	self[event](self, event, ...)
 end
 
-function WDE:BOSS_KILL()
+function WDL:BOSS_KILL()
     RequestRaidInfo()
 end
 
-function WDE:UPDATE_INSTANCE_INFO()
+function WDL:UPDATE_INSTANCE_INFO()
     UpdateSavedInstances()
 end
 
-WDE:RegisterEvent("BOSS_KILL")
-WDE:RegisterEvent("UPDATE_INSTANCE_INFO")
-WDE:SetScript("OnEvent", WDE.OnEvent)
+WDL:RegisterEvent("BOSS_KILL")
+WDL:RegisterEvent("UPDATE_INSTANCE_INFO")
+WDL:SetScript("OnEvent", WDL.OnEvent)
