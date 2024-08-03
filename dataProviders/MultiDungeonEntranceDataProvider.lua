@@ -87,16 +87,14 @@ function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
         for _, dungeonEntranceInfo in ipairs(self.dungeonEntranceInfo) do
             local _, _, _, _, _, _, _, _, _, instanceId, isRaid = EJ_GetInstanceInfo(dungeonEntranceInfo.journalInstanceID);
 
-            if private.savedInstances[instanceId] ~= nil then
-                GameTooltip_AddBlankLineToTooltip(tooltip)
-                tooltip:AddDoubleLine(dungeonEntranceInfo.name, isRaid and MAP_LEGEND_RAID or MAP_LEGEND_DUNGEON)
+            GameTooltip_AddBlankLineToTooltip(tooltip)
+            tooltip:AddDoubleLine(dungeonEntranceInfo.name, isRaid and MAP_LEGEND_RAID or MAP_LEGEND_DUNGEON)
 
+            if private.savedInstances[instanceId] ~= nil then
                 GameTooltip_AddNormalLine(tooltip, dungeonEntranceInfo.name)
                 for key, value in pairs(private.savedInstances[instanceId]) do
                     tooltip:AddDoubleLine("|cffffffee" .. key .. "|r", value)
                 end
-            else
-                tooltip:AddDoubleLine(dungeonEntranceInfo.name, isRaid and MAP_LEGEND_RAID or MAP_LEGEND_DUNGEON)
             end
         end
 
