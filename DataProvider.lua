@@ -14,9 +14,9 @@ WorldDungeonEntranceDataProviderMixin:Init('showDungeonEntrancesOnMap')
 function WorldDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID)
 	for _, dungeonInfo in next, C_EncounterJournal.GetDungeonEntrancesForMap(mapID) do
 		if parentMapID then
-		-- translate map positions
-		local continentID, worldPos = C_Map.GetWorldPosFromMapPos(mapID, dungeonInfo.position)
-		_, dungeonInfo.position = C_Map.GetMapPosFromWorldPos(continentID, worldPos, parentMapID)
+			-- translate map positions
+			local continentID, worldPos = C_Map.GetWorldPosFromMapPos(mapID, dungeonInfo.position)
+			_, dungeonInfo.position = C_Map.GetMapPosFromWorldPos(continentID, worldPos, parentMapID)
 		end
 
 		local pin = self:GetMap():AcquirePin('WorldDungeonEntrancePinTemplate', dungeonInfo)
