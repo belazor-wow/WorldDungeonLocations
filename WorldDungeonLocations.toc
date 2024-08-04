@@ -14,4 +14,6 @@
 WorldDungeonLocations.lua
 DataProvider.xml
 
+dataProviders/MultiDungeonEntranceDataProvider.xml
+
 Debug.lua

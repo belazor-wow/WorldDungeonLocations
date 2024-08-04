@@ -3,11 +3,16 @@ local private = select(2, ...) ---@class PrivateNamespace
 -- Create new dungeon entrance pin mixin
 WDLDungeonEntrancePinMixin = CreateFromMixins(DungeonEntrancePinMixin)
 
+--[[
 function WDLDungeonEntrancePinMixin:UpdateMousePropagation()
     if not InCombatLockdown() then
         self:SetPropagateMouseClicks(not self:DoesMapTypeAllowSuperTrack());
     end
 end
+]]
+
+function WDLDungeonEntrancePinMixin:UpdateMousePropagation() end
+function WDLDungeonEntrancePinMixin:DoesMapTypeAllowSuperTrack() return true; end
 
 function WDLDungeonEntrancePinMixin:CheckShowTooltip()
 	if self:UseTooltip() then
