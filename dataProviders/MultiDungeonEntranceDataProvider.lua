@@ -14,14 +14,13 @@ function WDLMultiDungeonEntranceDataProviderMixin:RemoveAllData()
 end
 
 function WDLMultiDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID)
-    local mapOverrideInfo = private.mapOverrides[mapID] or {}
+    local mapOverrideInfo = private.mapOverrides[mapID] or {};
 
     for _, pin in ipairs(mapOverrideInfo) do
-        local combinedEntranceInfo = {}
+        local combinedEntranceInfo = {};
 
         for _, childMapId in ipairs(pin.childMapIds) do
             for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(childMapId) do
-                dungeonInfo = CopyTable(dungeonInfo, true);
                 combinedEntranceInfo[dungeonInfo.journalInstanceID] = dungeonInfo;
             end
         end
@@ -99,14 +98,15 @@ function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
 		end
 
         for _, dungeonEntranceInfo in pairs(self.dungeonEntranceInfo) do
-            local _, _, _, _, _, _, _, _, _, instanceId, isRaid = EJ_GetInstanceInfo(dungeonEntranceInfo.journalInstanceID);
+            local instanceID = dungeonEntranceInfo.journalInstanceID;
+            local isRaid = dungeonEntranceInfo.atlasName == 'Raid';
 
             GameTooltip_AddBlankLineToTooltip(tooltip)
-            tooltip:AddDoubleLine(dungeonEntranceInfo.name, isRaid and "|cff5ed648" .. MAP_LEGEND_RAID .. "|r" or "|cff549f98" .. MAP_LEGEND_DUNGEON .. "|r")
+            tooltip:AddDoubleLine(dungeonEntranceInfo.name, (isRaid and "|cff5ed648" .. MAP_LEGEND_RAID .. "|r" or "|cff549f98" .. MAP_LEGEND_DUNGEON .. "|r") .. CreateAtlasMarkup(dungeonEntranceInfo.atlasName, 22, 22))
 
-            if private.savedInstances[instanceId] ~= nil then
+            if private.savedInstances[instanceID] ~= nil then
                 GameTooltip_AddNormalLine(tooltip, dungeonEntranceInfo.name)
-                for key, value in pairs(private.savedInstances[instanceId]) do
+                for key, value in pairs(private.savedInstances[instanceID]) do
                     tooltip:AddDoubleLine("|cffffffee" .. key .. "|r", value)
                 end
             end

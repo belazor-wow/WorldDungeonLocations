@@ -6,10 +6,22 @@ private.PinLocations = PinLocations;
 local HBD = LibStub('HereBeDragons-2.0');
 local AZEROTH_MAP_ID = 947;
 
+local function CopyTablePartial(tbl)
+    local newTbl = {};
+    for k, v in next, tbl do
+        newTbl[k] = CopyTable(v, true);
+    end
+
+    return newTbl;
+end
+
 PinLocations.cache = {};
+
+--- @param mapID number
+--- @return table<number, WDL_PinInfo>
 function PinLocations:GetInfoForMap(mapID)
     if mapID == AZEROTH_MAP_ID then return {}; end -- don't show them on the azeroth map
-    if self.cache[mapID] then return self.cache[mapID]; end
+    if self.cache[mapID] then return CopyTablePartial(self.cache[mapID]); end
     self.cache[mapID] = {};
 
     for _, data in next, self.data do
@@ -35,7 +47,7 @@ function PinLocations:GetInfoForMap(mapID)
         self.cache[mapID][dungeonInfo.areaPoiID] = dungeonInfo;
     end
 
-    return self.cache[mapID];
+    return CopyTablePartial(self.cache[mapID]);
 end
 
 --[[
