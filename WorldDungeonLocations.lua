@@ -1,6 +1,7 @@
 local private = select(2, ...) ---@class PrivateNamespace
 private.savedInstances = {}
 
+--- @type table<number, table[]> # mapId => { { position: {x: number, y: number}, childMapIds: number[], areaId: number? } }
 private.mapOverrides = {
     -- Burning Steppes
     [36] = {

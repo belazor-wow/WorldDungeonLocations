@@ -18,15 +18,28 @@ function WorldDungeonEntranceDataProviderMixin:GetPinTemplate()
 end
 
 function WorldDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID)
-    for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(mapID) do
-        dungeonInfo = CopyTable(dungeonInfo, true);
-        if parentMapID then
-            dungeonInfo.position = CreateVector2D(HBD:TranslateZoneCoordinates(dungeonInfo.position.x, dungeonInfo.position.y, mapID, parentMapID, false));
-        end
+    local mapOverrideInfo = private.mapOverrides[mapID] or {};
 
-        local pin = self:GetMap():AcquirePin(self:GetPinTemplate(), dungeonInfo)
-        pin.dataProvider = self;
-        pin:UpdateSupertrackedHighlight();
+    local entranceIgnoreList = {}; -- already handled by the MultiDungeonEntranceDataProvider, skip them here
+    for _, pin in ipairs(mapOverrideInfo) do
+        for _, childMapId in ipairs(pin.childMapIds) do
+            for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(childMapId) do
+                entranceIgnoreList[dungeonInfo.journalInstanceID] = true;
+            end
+        end
+    end
+
+    for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(mapID) do
+        if not entranceIgnoreList[dungeonInfo.journalInstanceID] then
+            dungeonInfo = CopyTable(dungeonInfo, true);
+            if parentMapID then
+                dungeonInfo.position = CreateVector2D(HBD:TranslateZoneCoordinates(dungeonInfo.position.x, dungeonInfo.position.y, mapID, parentMapID, false));
+            end
+
+            local pin = self:GetMap():AcquirePin(self:GetPinTemplate(), dungeonInfo)
+            pin.dataProvider = self;
+            pin:UpdateSupertrackedHighlight();
+        end
     end
 end
 
