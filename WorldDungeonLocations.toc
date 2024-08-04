@@ -11,6 +11,11 @@
 ## X-Source-URL: https://github.com/belazor-wow/WorldDungeonLocations
 ## X-Issues-URL: https://github.com/belazor-wow/WorldDungeonLocations/issues
 
+libs.xml
+
+data\PinLocations.lua
+data\Teleports.lua
+
 WorldDungeonLocations.lua
 
 dataProviders/WorldDungeonEntranceDataProvider.xml

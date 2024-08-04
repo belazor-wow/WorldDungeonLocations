@@ -6,8 +6,10 @@ WorldDungeonLocations shows dungeon and raid location map pins on the world map 
 
 ### Features:
 - Adds the new Dungeon / Raid Location pins to the world map
+- Adds dungeon entrance pins Blizzard forgot to add
+- Shows pins for dungeons your character has yet to discover
 - Shows dungeon/raid lockout status in the tooltip
-- Adds custom pins for multi-instance entrances, clickable to show the zone map
+- Adds custom pins for multi-instance entrances, with lockout status for all instances
 
 ### Multi-Dungeon Entrances
 - Blackrock Mountain
@@ -29,4 +31,4 @@ WorldDungeonLocations shows dungeon and raid location map pins on the world map 
 
 ### Credits:
 - [p3lim](https://github.com/p3lim-wow/) for writing the original pin code
-- [Numy](https://github.com/NumyAddon/) for helping with the custom pin code
+- [Numy](https://github.com/NumyAddon/) for helping with the custom pin code and for writing the updated pin database

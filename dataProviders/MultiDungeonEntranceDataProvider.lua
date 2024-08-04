@@ -1,5 +1,7 @@
 local private = select(2, ...) ---@class PrivateNamespace
 
+local HBD = LibStub('HereBeDragons-2.0');
+
 local WDLMultiDungeonEntranceDataProviderMixin = CreateFromMixins(CVarMapCanvasDataProviderMixin);
 WDLMultiDungeonEntranceDataProviderMixin:Init("showDungeonEntrancesOnMap");
 
@@ -11,42 +13,56 @@ function WDLMultiDungeonEntranceDataProviderMixin:RemoveAllData()
     self:GetMap():RemoveAllPinsByTemplate(self:GetPinTemplate());
 end
 
-function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData(fromOnShow)
-    self:RemoveAllData();
-
-    if not self:IsCVarSet() then
-        return;
-    end
-
-    local map = self:GetMap();
-    local mapID = map:GetMapID();
+function WDLMultiDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID)
     local mapOverrideInfo = private.mapOverrides[mapID] or {}
 
     for _, pin in ipairs(mapOverrideInfo) do
         local combinedEntranceInfo = {}
 
         for _, childMapId in ipairs(pin.childMapIds) do
-            local dungeonEntrances = C_EncounterJournal.GetDungeonEntrancesForMap(childMapId);
-
-            for _, dungeonEntranceInfo in ipairs(dungeonEntrances) do
-                table.insert(combinedEntranceInfo, dungeonEntranceInfo);
+            for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(childMapId) do
+                dungeonInfo = CopyTable(dungeonInfo, true);
+                combinedEntranceInfo[dungeonInfo.journalInstanceID] = dungeonInfo;
             end
         end
 
-        if #combinedEntranceInfo then
+        if next(combinedEntranceInfo) then
+            local x, y = pin.position.x, pin.position.y;
+            if parentMapID then
+                x, y = HBD:TranslateZoneCoordinates(x, y, mapID, parentMapID, false);
+            end
             local poiInfo = {
                 atlasName = "Raid",
-                name = pin.comboName or (pin.areaId and private.GetAreaName(pin.areaId) or private.GetMapName(pin.childMapIds[1])),
+                name = pin.comboName or (pin.areaId and private.GetAreaName(pin.areaId) or private.GetMapInfo(pin.childMapIds[1]).name),
                 isAlwaysOnFlightmap = false,
                 shouldGlow = false,
                 isPrimaryMapForPOI = true,
-                position = CreateVector2D(pin.position.x, pin.position.y),
-                dataProvider = WDLMultiDungeonEntranceDataProviderMixin
+                position = CreateVector2D(x, y),
+                dataProvider = WDLMultiDungeonEntranceDataProviderMixin,
             };
 
-            map:AcquirePin(self:GetPinTemplate(), poiInfo, combinedEntranceInfo, pin);
+            self:GetMap():AcquirePin(self:GetPinTemplate(), poiInfo, combinedEntranceInfo, pin);
         end
     end
+end
+
+function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData()
+    xpcall(function() -- by default, errors from dataproviders are silenced
+        self:RemoveAllData();
+        if not self:IsCVarSet() then
+            return;
+        end
+
+        local mapID = self:GetMap():GetMapID();
+        local mapInfo = private.GetMapInfo(mapID);
+        if mapInfo.mapType == Enum.UIMapType.Continent then
+            for _, childInfo in next, C_Map.GetMapChildrenInfo(mapID, Enum.UIMapType.Zone, true) do
+                self:RenderDungeons(childInfo.mapID, mapID);
+            end
+        else
+            self:RenderDungeons(mapID);
+        end
+    end, geterrorhandler());
 end
 
 --[[ Pin ]]--
@@ -82,7 +98,7 @@ function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
 			GameTooltip_AddNormalLine(tooltip, description);
 		end
 
-        for _, dungeonEntranceInfo in ipairs(self.dungeonEntranceInfo) do
+        for _, dungeonEntranceInfo in pairs(self.dungeonEntranceInfo) do
             local _, _, _, _, _, _, _, _, _, instanceId, isRaid = EJ_GetInstanceInfo(dungeonEntranceInfo.journalInstanceID);
 
             GameTooltip_AddBlankLineToTooltip(tooltip)

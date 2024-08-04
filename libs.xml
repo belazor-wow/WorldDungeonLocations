@@ -1,0 +1,7 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Script file="libs\LibStub\LibStub.lua"/>
+    <Include file="libs\CallbackHandler-1.0\CallbackHandler-1.0.xml"/>
+    <Script file="libs\HereBeDragons\HereBeDragons-2.0.lua"/>
+    <Script file="libs\HereBeDragons\HereBeDragons-Pins-2.0.lua"/>
+    <Script file="libs\HereBeDragons\HereBeDragons-Migrate.lua"/>
+</Ui>

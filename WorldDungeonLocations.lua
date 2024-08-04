@@ -1,6 +1,9 @@
 local private = select(2, ...) ---@class PrivateNamespace
+
+---@type Array<Dictionary<string>>
 private.savedInstances = {}
 
+--- @type table<number, table[]> # mapId => { { position: {x: number, y: number}, childMapIds: number[], areaId: number? } }
 private.mapOverrides = {
     -- Burning Steppes
     [36] = {
@@ -41,18 +44,22 @@ private.mapOverrides = {
     }
 }
 
-private.mapNames = {}
+---@type Array<UiMapDetails>
+private.mapInfo = {}
 
-private.GetMapName = function(mapId)
-    if not private.mapNames[mapId] then
-        private.mapNames[mapId] = C_Map.GetMapInfo(mapId).name
+---@param mapId number
+private.GetMapInfo = function(mapId)
+    if not private.mapInfo[mapId] then
+        private.mapInfo[mapId] = C_Map.GetMapInfo(mapId)
     end
 
-    return private.mapNames[mapId]
+    return private.mapInfo[mapId]
 end
 
+---@type Array<string>
 private.areaNames = {}
 
+---@param areaId number
 private.GetAreaName = function(areaId)
     if not private.areaNames[areaId] then
         private.areaNames[areaId] = C_Map.GetAreaInfo(areaId)
@@ -60,6 +67,57 @@ private.GetAreaName = function(areaId)
 
     return private.areaNames[areaId]
 end
+
+--- @return WDL_TeleportButton
+local function createAndInitTeleportButton()
+    --- @class WDL_TeleportButton: Button
+    local teleportButton = CreateFrame('Button', nil, UIParent, 'InsecureActionButtonTemplate')
+    teleportButton:Hide()
+    teleportButton:SetFrameLevel(9999) -- make sure we render high
+    teleportButton:SetAttribute('pressAndHoldAction', '1'); -- ensure it casts on down, regardless of the ActionButtonUseKeyDown cvar
+    teleportButton:RegisterForClicks('AnyDown');
+    teleportButton:SetAttribute('type', 'spell');
+
+    teleportButton:SetScript('OnEnter', function(self, ...)
+        if self.currentParent then self.currentParent:GetScript('OnEnter')(self.currentParent, ...) end
+    end);
+    teleportButton:SetScript('OnLeave', function(self, ...)
+        if self.currentParent then self.currentParent:GetScript('OnLeave')(self.currentParent, ...) end
+    end);
+
+    teleportButton:RegisterEvent('MODIFIER_STATE_CHANGED');
+    teleportButton:RegisterEvent('PLAYER_REGEN_DISABLED');
+    teleportButton:RegisterEvent('PLAYER_REGEN_ENABLED');
+    teleportButton:SetScript('OnEvent', function(self, event, ...) self[event](self, ...) end);
+    function teleportButton:MODIFIER_STATE_CHANGED()
+        if self.currentSpell and not InCombatLockdown() then
+            if IsShiftKeyDown() and not self:IsShown() then
+                self:SetAttribute('spell', self.currentSpell);
+                self:SetParent(self.currentParent);
+                self:SetAllPoints(self.currentParent);
+                self:Show();
+            elseif not IsShiftKeyDown() then
+                self:Hide();
+            end
+        end
+    end
+    function teleportButton:PLAYER_REGEN_DISABLED()
+        self:Hide();
+    end
+    function teleportButton:PLAYER_REGEN_ENABLED()
+        self:MODIFIER_STATE_CHANGED();
+    end
+
+    function teleportButton:SetParentAndSpell(parent, spellID)
+        self.currentParent = parent;
+        self.currentSpell = spellID;
+        self:MODIFIER_STATE_CHANGED();
+    end
+
+    return teleportButton;
+end
+-- Create a shared teleport button
+private.teleportButton = createAndInitTeleportButton();
 
 local function UpdateSavedInstances()
     table.wipe(private.savedInstances)
