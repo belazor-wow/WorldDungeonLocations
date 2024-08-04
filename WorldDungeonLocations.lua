@@ -1,4 +1,6 @@
 local private = select(2, ...) ---@class PrivateNamespace
+
+---@type Array<Dictionary<string>>
 private.savedInstances = {}
 
 --- @type table<number, table[]> # mapId => { { position: {x: number, y: number}, childMapIds: number[], areaId: number? } }
@@ -42,18 +44,22 @@ private.mapOverrides = {
     }
 }
 
-private.mapNames = {}
+---@type Array<UiMapDetails>
+private.mapInfo = {}
 
-private.GetMapName = function(mapId)
-    if not private.mapNames[mapId] then
-        private.mapNames[mapId] = C_Map.GetMapInfo(mapId).name
+---@param mapId number
+private.GetMapInfo = function(mapId)
+    if not private.mapInfo[mapId] then
+        private.mapInfo[mapId] = C_Map.GetMapInfo(mapId)
     end
 
-    return private.mapNames[mapId]
+    return private.mapInfo[mapId]
 end
 
+---@type Array<string>
 private.areaNames = {}
 
+---@param areaId number
 private.GetAreaName = function(areaId)
     if not private.areaNames[areaId] then
         private.areaNames[areaId] = C_Map.GetAreaInfo(areaId)

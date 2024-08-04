@@ -33,7 +33,7 @@ function WDLMultiDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMa
             end
             local poiInfo = {
                 atlasName = "Raid",
-                name = pin.comboName or (pin.areaId and private.GetAreaName(pin.areaId) or private.GetMapName(pin.childMapIds[1])),
+                name = pin.comboName or (pin.areaId and private.GetAreaName(pin.areaId) or private.GetMapInfo(pin.childMapIds[1]).name),
                 isAlwaysOnFlightmap = false,
                 shouldGlow = false,
                 isPrimaryMapForPOI = true,
@@ -54,7 +54,7 @@ function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData()
         end
 
         local mapID = self:GetMap():GetMapID();
-        local mapInfo = C_Map.GetMapInfo(mapID);
+        local mapInfo = private.GetMapInfo(mapID);
         if mapInfo.mapType == Enum.UIMapType.Continent then
             for _, childInfo in next, C_Map.GetMapChildrenInfo(mapID, Enum.UIMapType.Zone, true) do
                 self:RenderDungeons(childInfo.mapID, mapID);
