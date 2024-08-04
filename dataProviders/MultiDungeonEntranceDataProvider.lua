@@ -102,7 +102,7 @@ function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
             local isRaid = dungeonEntranceInfo.atlasName == 'Raid';
 
             GameTooltip_AddBlankLineToTooltip(tooltip)
-            tooltip:AddDoubleLine(dungeonEntranceInfo.name, (isRaid and "|cff5ed648" .. MAP_LEGEND_RAID .. "|r" or "|cff549f98" .. MAP_LEGEND_DUNGEON .. "|r") .. CreateAtlasMarkup(dungeonEntranceInfo.atlasName, 22, 22))
+            tooltip:AddDoubleLine(dungeonEntranceInfo.name, (isRaid and "|cff5ed648" .. MAP_LEGEND_RAID .. "|r" or "|cff55c2e3" .. MAP_LEGEND_DUNGEON .. "|r") .. CreateAtlasMarkup(dungeonEntranceInfo.atlasName, 22, 22))
 
             if private.savedInstances[instanceID] ~= nil then
                 GameTooltip_AddNormalLine(tooltip, dungeonEntranceInfo.name)
