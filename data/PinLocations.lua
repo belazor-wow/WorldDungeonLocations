@@ -13,7 +13,7 @@ function PinLocations:GetInfoForMap(mapID)
     self.cache[mapID] = {};
 
     for _, data in next, self.data do
-        local zoneX, zoneY = HBD:GetZoneCoordinatesFromWorld(data.pos1, data.pos0, mapID)
+        local zoneX, zoneY = HBD:GetZoneCoordinatesFromWorld(data.pos1, data.pos0, mapID, false)
         if zoneX and zoneY then
             local position = CreateVector2D(zoneX, zoneY);
             local continentID, _ = C_Map.GetWorldPosFromMapPos(mapID, position);
