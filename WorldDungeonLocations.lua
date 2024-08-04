@@ -19,7 +19,7 @@ end
 local WDL = CreateFrame("Frame")
 
 function WDL:OnEvent(event, ...)
-	self[event](self, event, ...)
+    self[event](self, event, ...)
 end
 
 function WDL:BOSS_KILL()

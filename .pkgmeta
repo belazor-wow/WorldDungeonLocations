@@ -1,0 +1,5 @@
+
+externals:
+    libs/CallbackHandler-1.0: https://repos.wowace.com/wow/ace3/trunk/CallbackHandler-1.0
+    libs/LibStub: https://repos.wowace.com/wow/ace3/trunk/LibStub
+    libs/HereBeDragons: https://repos.wowace.com/wow/herebedragons
