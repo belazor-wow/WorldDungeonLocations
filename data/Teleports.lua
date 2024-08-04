@@ -24,7 +24,7 @@ end
 
 -- gerenated by .query/Teleports.sql
 TeleportMap.data = {
-    ['Aliance'] = {
+    ['Alliance'] = {
         [1023] = 445418, -- ALLIANCE - Siege of Boralus
     },
     ['Horde'] = {
