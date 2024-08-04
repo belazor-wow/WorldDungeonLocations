@@ -1,9 +1,8 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\..\..\..\..\WoW\Data\Interface\AddOns\Blizzard_SharedXML\UI.xsd">
-    <Script file="PinMixin.lua"/>
-    <Script file="DataProvider.lua"/>
+    <Script file="WorldDungeonEntranceDataProvider.lua"/>
 
-    <Frame name="WorldDungeonEntrancePinTemplate" inherits="LegendHighlightableMapPoiPinTemplate, BaseSuperTrackableMapPoiPinTemplate" enableMouseClicks="true" mixin="WDLDungeonEntrancePinMixin" virtual="true">
+    <Frame name="WorldDungeonEntrancePinTemplate" inherits="LegendHighlightableMapPoiPinTemplate, BaseSuperTrackableMapPoiPinTemplate" enableMouseClicks="true" mixin="WorldDungeonEntrancePinMixin" virtual="true">
         <Scripts>
             <OnLoad method="OnLoad"/>
         </Scripts>

@@ -17,6 +17,8 @@ data\PinLocations.lua
 data\Teleports.lua
 
 WorldDungeonLocations.lua
-DataProvider.xml
+
+dataProviders/WorldDungeonEntranceDataProvider.xml
+dataProviders/MultiDungeonEntranceDataProvider.xml
 
 Debug.lua
