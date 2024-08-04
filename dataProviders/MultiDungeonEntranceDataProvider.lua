@@ -22,11 +22,11 @@ function WDLMultiDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMa
         for _, childMapId in ipairs(pin.childMapIds) do
             for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(childMapId) do
                 dungeonInfo = CopyTable(dungeonInfo, true);
-                table.insert(combinedEntranceInfo, dungeonInfo);
+                combinedEntranceInfo[dungeonInfo.journalInstanceID] = dungeonInfo;
             end
         end
 
-        if #combinedEntranceInfo then
+        if next(combinedEntranceInfo) then
             local x, y = pin.position.x, pin.position.y;
             if parentMapID then
                 x, y = HBD:TranslateZoneCoordinates(x, y, mapID, parentMapID, false);
@@ -98,7 +98,7 @@ function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
 			GameTooltip_AddNormalLine(tooltip, description);
 		end
 
-        for _, dungeonEntranceInfo in ipairs(self.dungeonEntranceInfo) do
+        for _, dungeonEntranceInfo in pairs(self.dungeonEntranceInfo) do
             local _, _, _, _, _, _, _, _, _, instanceId, isRaid = EJ_GetInstanceInfo(dungeonEntranceInfo.journalInstanceID);
 
             GameTooltip_AddBlankLineToTooltip(tooltip)
