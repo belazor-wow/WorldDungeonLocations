@@ -14,6 +14,16 @@ private.mapOverrides = {
     },
 }
 
+private.mapNames = {}
+
+private.GetMapName = function(mapId)
+    if not private.mapNames[mapId] then
+        private.mapNames[mapId] = C_Map.GetMapInfo(mapId).name
+    end
+
+    return private.mapNames[mapId]
+end
+
 local function UpdateSavedInstances()
     table.wipe(private.savedInstances)
     for i = 1, GetNumSavedInstances() do

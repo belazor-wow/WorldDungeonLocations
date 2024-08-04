@@ -22,24 +22,19 @@ function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData(fromOnShow)
     local mapID = map:GetMapID();
     local mapOverrideInfo = private.mapOverrides[mapID] or {}
     local combinedEntranceInfo = {}
-    local instanceNames = {}
 
     for _, childMapId in ipairs(mapOverrideInfo.childMapIds) do
         local dungeonEntrances = C_EncounterJournal.GetDungeonEntrancesForMap(childMapId);
 
         for _, dungeonEntranceInfo in ipairs(dungeonEntrances) do
             table.insert(combinedEntranceInfo, dungeonEntranceInfo);
-            table.insert(instanceNames, dungeonEntranceInfo.name)
         end
     end
-
-    local mapName = C_Map.GetMapInfo(mapID).name
 
     if #combinedEntranceInfo then
         local poiInfo = {
             atlasName = "Raid",
-            name = mapOverrideInfo.comboName or mapName,
-            --description = string.join(', ', unpack(instanceNames)),
+            name = mapOverrideInfo.comboName or private.GetMapName(mapOverrideInfo.childMapIds[1]),
             isAlwaysOnFlightmap = false,
             shouldGlow = false,
             isPrimaryMapForPOI = true,
@@ -88,7 +83,7 @@ function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
             local _, _, _, _, _, _, _, _, _, instanceId, isRaid = EJ_GetInstanceInfo(dungeonEntranceInfo.journalInstanceID);
 
             GameTooltip_AddBlankLineToTooltip(tooltip)
-            tooltip:AddDoubleLine(dungeonEntranceInfo.name, isRaid and MAP_LEGEND_RAID or MAP_LEGEND_DUNGEON)
+            tooltip:AddDoubleLine(dungeonEntranceInfo.name, isRaid and "|cff5ed648" .. MAP_LEGEND_RAID .. "|r" or "|cff549f98" .. MAP_LEGEND_DUNGEON .. "|r")
 
             if private.savedInstances[instanceId] ~= nil then
                 GameTooltip_AddNormalLine(tooltip, dungeonEntranceInfo.name)
