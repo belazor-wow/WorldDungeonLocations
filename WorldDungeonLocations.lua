@@ -31,6 +31,14 @@ private.mapOverrides = {
             ["childMapIds"] = {34}
         },
     },
+
+    -- Caverns of Time
+    [71] = {
+        {
+            ["position"] = {x = 0.64903825521469, y = 0.49888265132904},
+            ["childMapIds"] = {75}
+        }
+    }
 }
 
 private.mapNames = {}
