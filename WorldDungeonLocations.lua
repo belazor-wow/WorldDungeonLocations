@@ -13,7 +13,7 @@ private.mapOverrides = {
     -- Searing Gorge
     [32] = {
         {
-            ["position"] = {x = 0.3478, y = 0.8392},
+            ["position"] = {x = 0.34749120473862, y = 0.84045135974884},
             ["childMapIds"] = {33, 34, 35}
         }
     },
