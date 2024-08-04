@@ -126,6 +126,7 @@ function WDLMultiDungeonEntrancePinMixin:OnAcquired(poiInfo, multiDungeonEntranc
     self.mapOverrideInfo = multiDungeonMapOverrideInfo;
 end
 
+--[[
 function WDLMultiDungeonEntrancePinMixin:OnMouseClickAction(button)
     if InCombatLockdown() then return end
 
@@ -133,6 +134,7 @@ function WDLMultiDungeonEntrancePinMixin:OnMouseClickAction(button)
         WorldMapFrame:SetMapID(self.mapOverrideInfo.childMapIds[1])
     end
 end
+]]
 
 
 WorldMapFrame:AddDataProvider(WDLMultiDungeonEntranceDataProviderMixin);
