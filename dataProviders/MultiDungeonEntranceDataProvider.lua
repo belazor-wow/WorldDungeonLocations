@@ -21,28 +21,31 @@ function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData(fromOnShow)
     local map = self:GetMap();
     local mapID = map:GetMapID();
     local mapOverrideInfo = private.mapOverrides[mapID] or {}
-    local combinedEntranceInfo = {}
 
-    for _, childMapId in ipairs(mapOverrideInfo.childMapIds) do
-        local dungeonEntrances = C_EncounterJournal.GetDungeonEntrancesForMap(childMapId);
+    for _, pin in ipairs(mapOverrideInfo) do
+        local combinedEntranceInfo = {}
 
-        for _, dungeonEntranceInfo in ipairs(dungeonEntrances) do
-            table.insert(combinedEntranceInfo, dungeonEntranceInfo);
+        for _, childMapId in ipairs(pin.childMapIds) do
+            local dungeonEntrances = C_EncounterJournal.GetDungeonEntrancesForMap(childMapId);
+
+            for _, dungeonEntranceInfo in ipairs(dungeonEntrances) do
+                table.insert(combinedEntranceInfo, dungeonEntranceInfo);
+            end
         end
-    end
 
-    if #combinedEntranceInfo then
-        local poiInfo = {
-            atlasName = "Raid",
-            name = mapOverrideInfo.comboName or private.GetMapName(mapOverrideInfo.childMapIds[1]),
-            isAlwaysOnFlightmap = false,
-            shouldGlow = false,
-            isPrimaryMapForPOI = true,
-            position = CreateVector2D(mapOverrideInfo.position.x, mapOverrideInfo.position.y),
-            dataProvider = WDLMultiDungeonEntranceDataProviderMixin
-        };
+        if #combinedEntranceInfo then
+            local poiInfo = {
+                atlasName = "Raid",
+                name = pin.comboName or (pin.areaId and private.GetAreaName(pin.areaId) or private.GetMapName(pin.childMapIds[1])),
+                isAlwaysOnFlightmap = false,
+                shouldGlow = false,
+                isPrimaryMapForPOI = true,
+                position = CreateVector2D(pin.position.x, pin.position.y),
+                dataProvider = WDLMultiDungeonEntranceDataProviderMixin
+            };
 
-        map:AcquirePin(self:GetPinTemplate(), poiInfo, combinedEntranceInfo, mapOverrideInfo);
+            map:AcquirePin(self:GetPinTemplate(), poiInfo, combinedEntranceInfo, pin);
+        end
     end
 end
 
