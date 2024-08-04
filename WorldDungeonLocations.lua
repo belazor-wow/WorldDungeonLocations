@@ -48,6 +48,7 @@ private.mapOverrides = {
 private.mapInfo = {}
 
 ---@param mapId number
+---@return UiMapDetails
 private.GetMapInfo = function(mapId)
     if not private.mapInfo[mapId] then
         private.mapInfo[mapId] = C_Map.GetMapInfo(mapId)
@@ -60,6 +61,7 @@ end
 private.areaNames = {}
 
 ---@param areaId number
+---@return string
 private.GetAreaName = function(areaId)
     if not private.areaNames[areaId] then
         private.areaNames[areaId] = C_Map.GetAreaInfo(areaId)
