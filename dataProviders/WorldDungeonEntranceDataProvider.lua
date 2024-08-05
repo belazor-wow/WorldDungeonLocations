@@ -31,7 +31,6 @@ function WorldDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID
 
     for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(mapID) do
         if not entranceIgnoreList[dungeonInfo.journalInstanceID] then
-            dungeonInfo = CopyTable(dungeonInfo, true);
             if parentMapID then
                 dungeonInfo.position = CreateVector2D(HBD:TranslateZoneCoordinates(dungeonInfo.position.x, dungeonInfo.position.y, mapID, parentMapID, false));
             end
