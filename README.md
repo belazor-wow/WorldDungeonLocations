@@ -10,6 +10,7 @@ WorldDungeonLocations shows dungeon and raid location map pins on the world map 
 - Shows pins for dungeons your character has yet to discover
 - Shows dungeon/raid lockout status in the tooltip
 - Adds custom pins for multi-instance entrances, with lockout status for all instances
+- Adds a new category to the Map Legend for Multi-instance entrances
 
 ### Multi-Dungeon Entrances
 - Blackrock Mountain
