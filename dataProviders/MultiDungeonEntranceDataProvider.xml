@@ -2,7 +2,7 @@
 ..\..\..\..\..\WoW\Data\Interface\AddOns\Blizzard_SharedXML\UI.xsd">
     <Script file="MultiDungeonEntranceDataProvider.lua"/>
 
-    <Frame name="WDLMultiDungeonEntrancePinTemplate" inherits="BaseHighlightableMapPoiPinTemplate" enableMouseClicks="true" mixin="WDLMultiDungeonEntrancePinMixin" virtual="true">
+    <Frame name="WDLMultiDungeonEntrancePinTemplate" inherits="LegendHighlightableMapPoiPinTemplate, BaseHighlightableMapPoiPinTemplate" enableMouseClicks="true" mixin="WDLMultiDungeonEntrancePinMixin" virtual="true">
 		<Layers>
 			<Layer level="OVERLAY" textureSubLevel="2">
 				<Texture parentKey="GlowTexture" hidden="true">

@@ -44,6 +44,13 @@ private.mapOverrides = {
     }
 }
 
+private.MapLegendData = {
+    CategoryTitle = "Test",
+    CategoryData = {
+        { Atlas = "Dungeon", Name = MAP_LEGEND_DUNGEON, Tooltip = MAP_LEGEND_DUNGEON_TOOLTIP, TemplateNames = {"WDLMultiDungeonEntrancePinTemplate"} },
+    }
+};
+
 ---@type Array<UiMapDetails>
 private.mapInfo = {}
 
@@ -150,6 +157,31 @@ function WDL:UPDATE_INSTANCE_INFO()
     UpdateSavedInstances()
 end
 
+function WDL:PLAYER_LOGIN()
+    table.insert(_G[MAP_LEGEND_DUNGEON].templates, "WorldDungeonEntrancePinTemplate")
+    table.insert(_G[MAP_LEGEND_RAID].templates, "WorldDungeonEntrancePinTemplate")
+
+    local index = 3;
+    local category = CreateFrame("Frame", private.MapLegendData.CategoryTitle, QuestMapFrame.MapLegend.ScrollFrame.ScrollChild, "MapLegendCategoryTemplate", index);
+    category.TitleText:SetText(private.MapLegendData.CategoryTitle);
+    category.layoutIndex = index;
+    category:Show();
+
+    local buttons = {};
+    for i, categoryData in ipairs(private.MapLegendData.CategoryData) do
+        local button = CreateFrame("Button", categoryData.Name, category, "MapLegendButtonTemplate", i);
+        button:InitilizeButton(categoryData, i);
+        table.insert(buttons, button);
+    end
+
+    local layout = AnchorUtil.CreateGridLayout(GridLayoutMixin.Direction.TopLeftToBottomRight, 2, 0, 5);
+    local anchor = CreateAnchor("TOPLEFT", category, "TOPLEFT", 0, 0);
+    AnchorUtil.GridLayout(buttons, anchor, layout);
+
+    category:Layout();
+end
+
 WDL:RegisterEvent("BOSS_KILL")
 WDL:RegisterEvent("UPDATE_INSTANCE_INFO")
+WDL:RegisterEvent("PLAYER_LOGIN")
 WDL:SetScript("OnEvent", WDL.OnEvent)
