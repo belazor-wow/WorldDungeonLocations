@@ -142,15 +142,13 @@ function WDLMultiDungeonEntrancePinMixin:OnAcquired(poiInfo, multiDungeonEntranc
     self.mapOverrideInfo = multiDungeonMapOverrideInfo;
 end
 
---[[
 function WDLMultiDungeonEntrancePinMixin:OnMouseClickAction(button)
-    if InCombatLockdown() then return end
-
     if button == "LeftButton" then
-        WorldMapFrame:SetMapID(self.mapOverrideInfo.childMapIds[1])
+        local uiMapPoint = UiMapPoint.CreateFromVector2D(self:GetMap():GetMapID(), self.poiInfo.position, 0);
+        C_Map.SetUserWaypoint(uiMapPoint);
+        C_SuperTrack.SetSuperTrackedUserWaypoint(true);
     end
 end
-]]
 
 
 WorldMapFrame:AddDataProvider(WDLMultiDungeonEntranceDataProviderMixin);
