@@ -18,6 +18,8 @@ data\Teleports.lua
 
 WorldDungeonLocations.lua
 
+MapLegend/MapLegendFrame.xml
+
 dataProviders/WorldDungeonEntranceDataProvider.xml
 dataProviders/MultiDungeonEntranceDataProvider.xml
 

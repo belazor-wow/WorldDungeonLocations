@@ -48,7 +48,12 @@ private.mapOverrides = {
 private.MapLegendData = {
     CategoryTitle = AddOnFolderName,
     CategoryData = {
-        { Atlas = "Dungeon", Name = MAP_LEGEND_DUNGEON, Tooltip = MAP_LEGEND_DUNGEON_TOOLTIP, TemplateNames = {"WDLMultiDungeonEntrancePinTemplate"} },
+        {
+            Name = "WDLMapLegendMultiDungeonButton",
+            Text = "Multiple instances",
+            Tooltip = "An entrance providing access to multiple separate dungeon or raid instances",
+            TemplateNames = {"WDLMultiDungeonEntrancePinTemplate"}
+        },
     }
 };
 
@@ -170,8 +175,8 @@ function WDL:PLAYER_LOGIN()
 
     local buttons = {};
     for i, categoryData in ipairs(private.MapLegendData.CategoryData) do
-        local button = CreateFrame("Button", categoryData.Name, category, "MapLegendButtonTemplate", i);
-        button:InitilizeButton(categoryData, i);
+        local button = CreateFrame("Button", categoryData.Name, category, "WDLMapLegendButtonTemplate", i);
+        button:InitializeButton(categoryData, i);
         table.insert(buttons, button);
     end
 
