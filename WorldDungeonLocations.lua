@@ -1,3 +1,4 @@
+local AddOnFolderName = ... ---@type string
 local private = select(2, ...) ---@class PrivateNamespace
 
 ---@type Array<Dictionary<string>>
@@ -45,7 +46,7 @@ private.mapOverrides = {
 }
 
 private.MapLegendData = {
-    CategoryTitle = "Test",
+    CategoryTitle = AddOnFolderName,
     CategoryData = {
         { Atlas = "Dungeon", Name = MAP_LEGEND_DUNGEON, Tooltip = MAP_LEGEND_DUNGEON_TOOLTIP, TemplateNames = {"WDLMultiDungeonEntrancePinTemplate"} },
     }
