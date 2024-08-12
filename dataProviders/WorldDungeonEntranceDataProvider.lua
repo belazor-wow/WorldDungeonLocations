@@ -1,3 +1,4 @@
+local AddOnFolderName = ... ---@type string
 local private = select(2, ...); ---@class PrivateNamespace
 
 local HBD = LibStub('HereBeDragons-2.0');
@@ -90,6 +91,26 @@ function WorldDungeonEntrancePinMixin:UpdateMousePropagation() end
 function WorldDungeonEntrancePinMixin:DoesMapTypeAllowSuperTrack() return true; end
 
 local teleportInstructionText = '<' .. StripHyperlinks(WARDROBE_SHORTCUTS_TUTORIAL_2):gsub('[[%]]', '') .. ': ' .. TELEPORT_TO_DUNGEON .. '>';
+local tomTomInstructionText = '<Alt Click to set TomTom waypoint>'
+
+function WorldDungeonEntrancePinMixin:OnMouseClickAction(button)
+    if button == "LeftButton" and TomTom and IsAltKeyDown() then
+        TomTom:AddWaypoint(self:GetMap():GetMapID(), self.poiInfo.position.x, self.poiInfo.position.y, {
+            title = self.name,
+            from = AddOnFolderName,
+            persistent = nil,
+            minimap = true,
+            world = true
+        })
+    else
+        SuperTrackablePinMixin.OnMouseClickAction(self, button);
+    end
+
+	if button == "RightButton" then
+		EncounterJournal_LoadUI();
+		EncounterJournal_OpenJournal(nil, self.journalInstanceID);
+	end
+end
 
 function WorldDungeonEntrancePinMixin:CheckShowTooltip()
 	if self:UseTooltip() then
@@ -139,6 +160,10 @@ function WorldDungeonEntrancePinMixin:CheckShowTooltip()
             if InCombatLockdown() then
                 GameTooltip_AddColoredLine(tooltip, ERR_NOT_IN_COMBAT, RED_FONT_COLOR, false);
             end
+        end
+
+        if TomTom then
+            GameTooltip_AddInstructionLine(tooltip, tomTomInstructionText, false);
         end
 
 		tooltip:Show();

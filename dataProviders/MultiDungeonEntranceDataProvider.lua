@@ -1,3 +1,4 @@
+local AddOnFolderName = ... ---@type string
 local private = select(2, ...) ---@class PrivateNamespace
 
 local HBD = LibStub('HereBeDragons-2.0');
@@ -64,6 +65,8 @@ function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData()
     end, geterrorhandler());
 end
 
+local tomTomInstructionText = '<Alt Click to set TomTom waypoint>'
+
 --[[ Pin ]]--
 WDLMultiDungeonEntrancePinMixin = BaseMapPoiPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DUNGEON_ENTRANCE");    --PIN_FRAME_LEVEL_WORLD_QUEST, PIN_FRAME_LEVEL_VIGNETTE
 
@@ -117,6 +120,10 @@ function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
 			GameTooltip_AddInstructionLine(tooltip, instructionLine, false);
 		end
 
+        if TomTom then
+            GameTooltip_AddInstructionLine(tooltip, tomTomInstructionText, false);
+        end
+
 		tooltip:Show();
 	end
 end
@@ -144,9 +151,19 @@ end
 
 function WDLMultiDungeonEntrancePinMixin:OnMouseClickAction(button)
     if button == "LeftButton" then
-        local uiMapPoint = UiMapPoint.CreateFromVector2D(self:GetMap():GetMapID(), self.poiInfo.position, 0);
-        C_Map.SetUserWaypoint(uiMapPoint);
-        C_SuperTrack.SetSuperTrackedUserWaypoint(true);
+        if TomTom and IsAltKeyDown() then
+            TomTom:AddWaypoint(self:GetMap():GetMapID(), self.poiInfo.position.x, self.poiInfo.position.y, {
+                title = self.name,
+                from = AddOnFolderName,
+                persistent = nil,
+                minimap = true,
+                world = true
+            })
+        else
+            local uiMapPoint = UiMapPoint.CreateFromVector2D(self:GetMap():GetMapID(), self.poiInfo.position, 0);
+            C_Map.SetUserWaypoint(uiMapPoint);
+            C_SuperTrack.SetSuperTrackedUserWaypoint(true);
+        end
     end
 end
 
