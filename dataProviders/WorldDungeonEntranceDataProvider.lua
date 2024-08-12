@@ -30,12 +30,8 @@ function WorldDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID
         end
     end
 
-    for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(mapID) do
+    for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(mapID, parentMapID) do
         if not entranceIgnoreList[dungeonInfo.journalInstanceID] then
-            if parentMapID then
-                dungeonInfo.position = CreateVector2D(HBD:TranslateZoneCoordinates(dungeonInfo.position.x, dungeonInfo.position.y, mapID, parentMapID, false));
-            end
-
             local pin = self:GetMap():AcquirePin(self:GetPinTemplate(), dungeonInfo)
             pin.dataProvider = self;
             pin:UpdateSupertrackedHighlight();
