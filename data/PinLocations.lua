@@ -26,6 +26,10 @@ function PinLocations:GetInfoForMap(mapID)
 
     for _, data in next, self.data do
         local zoneX, zoneY = HBD:GetZoneCoordinatesFromWorld(data.pos1, data.pos0, mapID, false)
+        local override = self.dataOverrides[mapID] and self.dataOverrides[mapID][data.journalInstanceID];
+        if override then
+            zoneX, zoneY = override.zoneX, override.zoneY;
+        end
         if zoneX and zoneY then
             local position = CreateVector2D(zoneX, zoneY);
             local continentID, _ = C_Map.GetWorldPosFromMapPos(mapID, position);
@@ -53,8 +57,11 @@ end
 --[[
     Overrides continent map coordinates for certain journalInstanceID's
 ]]
+--- @type table<number, table<number, {zoneX: number, zoneY: number}>> # [mapID][journalInstanceID] = positionOverride
 PinLocations.dataOverrides = {
-    [362] = { pos0 = 0.09670093238354, pos1 = 0.098636311590672 }, -- Throne of Thunder
+    [504] = { -- Pandaria continent
+        [362] = { zoneX = 0.09670093238354, zoneY = 0.098636311590672 }, -- Throne of Thunder
+    },
 }
 
 --[[
