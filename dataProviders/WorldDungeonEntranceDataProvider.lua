@@ -79,7 +79,7 @@ local tomTomInstructionText = '<Alt Right Click to set TomTom waypoint>'
 
 function WorldDungeonEntrancePinMixin:OnMouseClickAction(button)
     if button == "RightButton" and TomTom and IsAltKeyDown() then
-        TomTom:AddWaypoint(self:GetMap():GetMapID(), self.poiInfo.position.x, self.poiInfo.position.y, {
+        TomTom:AddWaypoint(self.poiInfo.zonePosition.mapID, self.poiInfo.zonePosition.position.x, self.poiInfo.zonePosition.position.y, {
             title = self.name,
             from = AddOnFolderName,
             persistent = nil,

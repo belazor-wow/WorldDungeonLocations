@@ -37,6 +37,7 @@ function PinLocations:GetInfoForMap(mapID, parentMapID)
                 self.cache[mapID][parentMapID][data.areaPoiID] = {
                     areaPoiID = data.areaPoiID,
                     position = position,
+                    zonePosition = { mapID = mapID, position = position },
                     name = data.name,
                     description = data.atlasName == "Dungeon" and MAP_LEGEND_DUNGEON or MAP_LEGEND_RAID,
                     atlasName = data.atlasName,
@@ -47,6 +48,7 @@ function PinLocations:GetInfoForMap(mapID, parentMapID)
         end
     end
     for _, dungeonInfo in next, C_EncounterJournal.GetDungeonEntrancesForMap(mapID) do
+        dungeonInfo.zonePosition = { mapID = mapID, position = dungeonInfo.position }
         self.cache[mapID][parentMapID][dungeonInfo.areaPoiID] = dungeonInfo;
     end
     if parentMapID > -1 then

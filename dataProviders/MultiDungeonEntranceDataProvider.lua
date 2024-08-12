@@ -38,6 +38,7 @@ function WDLMultiDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMa
                 shouldGlow = false,
                 isPrimaryMapForPOI = true,
                 position = CreateVector2D(x, y),
+                zonePosition = { mapID = mapID, position = pin.position },
                 dataProvider = WDLMultiDungeonEntranceDataProviderMixin,
             };
 
@@ -149,6 +150,12 @@ function WDLMultiDungeonEntrancePinMixin:OnAcquired(poiInfo, multiDungeonEntranc
     self.mapOverrideInfo = multiDungeonMapOverrideInfo;
 end
 
+function WDLMultiDungeonEntrancePinMixin:ShouldMouseButtonBePassthrough(button)
+	-- Dungeon entrances allow left click to set waypoint and right click to open journal.
+	-- Other buttons don't matter at this time.
+	return false;
+end
+
 function WDLMultiDungeonEntrancePinMixin:OnMouseClickAction(button)
     if button == "LeftButton" then
         local uiMapPoint = UiMapPoint.CreateFromVector2D(self:GetMap():GetMapID(), self.poiInfo.position, 0);
@@ -157,7 +164,7 @@ function WDLMultiDungeonEntrancePinMixin:OnMouseClickAction(button)
     end
 
     if button == "RightButton" and TomTom and IsAltKeyDown() then
-        TomTom:AddWaypoint(self:GetMap():GetMapID(), self.poiInfo.position.x, self.poiInfo.position.y, {
+        TomTom:AddWaypoint(self.poiInfo.zonePosition.mapID, self.poiInfo.zonePosition.position.x, self.poiInfo.zonePosition.position.y, {
             title = self.name,
             from = AddOnFolderName,
             persistent = nil,
