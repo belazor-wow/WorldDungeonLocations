@@ -15,7 +15,7 @@ local WorldDungeonEntranceDataProviderMixin = CreateFromMixins(DungeonEntranceDa
 WorldDungeonEntranceDataProviderMixin:Init('showDungeonEntrancesOnMap');
 
 function WorldDungeonEntranceDataProviderMixin:GetPinTemplate()
-	return "WorldDungeonEntrancePinTemplate";
+    return "WorldDungeonEntrancePinTemplate";
 end
 
 function WorldDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID)
@@ -79,10 +79,10 @@ function WorldDungeonEntrancePinMixin:UpdateMousePropagation() end
 function WorldDungeonEntrancePinMixin:DoesMapTypeAllowSuperTrack() return true; end
 
 local teleportInstructionText = '<' .. StripHyperlinks(WARDROBE_SHORTCUTS_TUTORIAL_2):gsub('[[%]]', '') .. ': ' .. TELEPORT_TO_DUNGEON .. '>';
-local tomTomInstructionText = '<Alt Click to set TomTom waypoint>'
+local tomTomInstructionText = '<Alt Right Click to set TomTom waypoint>'
 
 function WorldDungeonEntrancePinMixin:OnMouseClickAction(button)
-    if button == "LeftButton" and TomTom and IsAltKeyDown() then
+    if button == "RightButton" and TomTom and IsAltKeyDown() then
         TomTom:AddWaypoint(self:GetMap():GetMapID(), self.poiInfo.position.x, self.poiInfo.position.y, {
             title = self.name,
             from = AddOnFolderName,
@@ -90,33 +90,35 @@ function WorldDungeonEntrancePinMixin:OnMouseClickAction(button)
             minimap = true,
             world = true
         })
+
+        return
     else
         SuperTrackablePinMixin.OnMouseClickAction(self, button);
     end
 
-	if button == "RightButton" then
-		EncounterJournal_LoadUI();
-		EncounterJournal_OpenJournal(nil, self.journalInstanceID);
-	end
+    if button == "RightButton" then
+        EncounterJournal_LoadUI();
+        EncounterJournal_OpenJournal(nil, self.journalInstanceID);
+    end
 end
 
 function WorldDungeonEntrancePinMixin:CheckShowTooltip()
-	if self:UseTooltip() then
+    if self:UseTooltip() then
         local instanceId = select(10, EJ_GetInstanceInfo(self.journalInstanceID));
 
-		local tooltip = GetAppropriateTooltip();
-		tooltip:SetOwner(self, "ANCHOR_RIGHT");
-		local name, description = self:GetBestNameAndDescription();
-		GameTooltip_SetTitle(tooltip, name);
+        local tooltip = GetAppropriateTooltip();
+        tooltip:SetOwner(self, "ANCHOR_RIGHT");
+        local name, description = self:GetBestNameAndDescription();
+        GameTooltip_SetTitle(tooltip, name);
 
         if self.poiInfo and self.poiInfo.faction and self.poiInfo.faction ~= UnitFactionGroup('player') then
             local localizedFaction = self.poiInfo.faction == 'Alliance' and FACTION_ALLIANCE or FACTION_HORDE;
             GameTooltip_AddColoredLine(tooltip, FACTION_CONTROLLED_TERRITORY:format(localizedFaction), RED_FONT_COLOR);
         end
 
-		if description then
-			GameTooltip_AddNormalLine(tooltip, description);
-		end
+        if description then
+            GameTooltip_AddNormalLine(tooltip, description);
+        end
 
         if private.savedInstances[instanceId] ~= nil then
             for key, value in pairs(private.savedInstances[instanceId]) do
@@ -124,10 +126,10 @@ function WorldDungeonEntrancePinMixin:CheckShowTooltip()
             end
         end
 
-		local instructionLine = self:GetTooltipInstructions();
-		if instructionLine then
-			GameTooltip_AddInstructionLine(tooltip, instructionLine, false);
-		end
+        local instructionLine = self:GetTooltipInstructions();
+        if instructionLine then
+            GameTooltip_AddInstructionLine(tooltip, instructionLine, false);
+        end
         local spellID, cooldownDuration, isKnown = private.TeleportMap:GetByJournalInstanceID(self.journalInstanceID);
         if isKnown then
             private.teleportButton:SetParentAndSpell(self, spellID);
@@ -154,8 +156,8 @@ function WorldDungeonEntrancePinMixin:CheckShowTooltip()
             GameTooltip_AddInstructionLine(tooltip, tomTomInstructionText, false);
         end
 
-		tooltip:Show();
-	end
+        tooltip:Show();
+    end
 end
 
 WorldMapFrame:AddDataProvider(WorldDungeonEntranceDataProviderMixin)

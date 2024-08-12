@@ -65,7 +65,7 @@ function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData()
     end, geterrorhandler());
 end
 
-local tomTomInstructionText = '<Alt Click to set TomTom waypoint>'
+local tomTomInstructionText = '<Alt Right Click to set TomTom waypoint>'
 
 --[[ Pin ]]--
 WDLMultiDungeonEntrancePinMixin = BaseMapPoiPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DUNGEON_ENTRANCE");    --PIN_FRAME_LEVEL_WORLD_QUEST, PIN_FRAME_LEVEL_VIGNETTE
@@ -90,15 +90,15 @@ function WDLMultiDungeonEntrancePinMixin:UseTooltip()
 end
 
 function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
-	if self:UseTooltip() then
-		local tooltip = GetAppropriateTooltip();
-		tooltip:SetOwner(self, "ANCHOR_RIGHT");
-		local name, description = self:GetBestNameAndDescription();
-		GameTooltip_SetTitle(tooltip, name);
+    if self:UseTooltip() then
+        local tooltip = GetAppropriateTooltip();
+        tooltip:SetOwner(self, "ANCHOR_RIGHT");
+        local name, description = self:GetBestNameAndDescription();
+        GameTooltip_SetTitle(tooltip, name);
 
-		if description then
-			GameTooltip_AddNormalLine(tooltip, description);
-		end
+        if description then
+            GameTooltip_AddNormalLine(tooltip, description);
+        end
 
         for _, dungeonEntranceInfo in pairs(self.dungeonEntranceInfo) do
             local instanceID = dungeonEntranceInfo.journalInstanceID;
@@ -115,17 +115,17 @@ function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
             end
         end
 
-		local instructionLine = self:GetTooltipInstructions();
-		if instructionLine then
-			GameTooltip_AddInstructionLine(tooltip, instructionLine, false);
-		end
+        local instructionLine = self:GetTooltipInstructions();
+        if instructionLine then
+            GameTooltip_AddInstructionLine(tooltip, instructionLine, false);
+        end
 
         if TomTom then
             GameTooltip_AddInstructionLine(tooltip, tomTomInstructionText, false);
         end
 
-		tooltip:Show();
-	end
+        tooltip:Show();
+    end
 end
 
 function WDLMultiDungeonEntrancePinMixin:OnAcquired(poiInfo, multiDungeonEntranceInfo, multiDungeonMapOverrideInfo)
@@ -151,19 +151,19 @@ end
 
 function WDLMultiDungeonEntrancePinMixin:OnMouseClickAction(button)
     if button == "LeftButton" then
-        if TomTom and IsAltKeyDown() then
-            TomTom:AddWaypoint(self:GetMap():GetMapID(), self.poiInfo.position.x, self.poiInfo.position.y, {
-                title = self.name,
-                from = AddOnFolderName,
-                persistent = nil,
-                minimap = true,
-                world = true
-            })
-        else
-            local uiMapPoint = UiMapPoint.CreateFromVector2D(self:GetMap():GetMapID(), self.poiInfo.position, 0);
-            C_Map.SetUserWaypoint(uiMapPoint);
-            C_SuperTrack.SetSuperTrackedUserWaypoint(true);
-        end
+        local uiMapPoint = UiMapPoint.CreateFromVector2D(self:GetMap():GetMapID(), self.poiInfo.position, 0);
+        C_Map.SetUserWaypoint(uiMapPoint);
+        C_SuperTrack.SetSuperTrackedUserWaypoint(true);
+    end
+
+    if button == "RightButton" and TomTom and IsAltKeyDown() then
+        TomTom:AddWaypoint(self:GetMap():GetMapID(), self.poiInfo.position.x, self.poiInfo.position.y, {
+            title = self.name,
+            from = AddOnFolderName,
+            persistent = nil,
+            minimap = true,
+            world = true
+        })
     end
 end
 

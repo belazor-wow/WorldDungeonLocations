@@ -26,10 +26,6 @@ function PinLocations:GetInfoForMap(mapID)
 
     for _, data in next, self.data do
         local zoneX, zoneY = HBD:GetZoneCoordinatesFromWorld(data.pos1, data.pos0, mapID, false)
-        local override = self.dataOverrides[mapID] and self.dataOverrides[mapID][data.journalInstanceID];
-        if override then
-            zoneX, zoneY = override.zoneX, override.zoneY;
-        end
         if zoneX and zoneY then
             local position = CreateVector2D(zoneX, zoneY);
             local continentID, _ = C_Map.GetWorldPosFromMapPos(mapID, position);
@@ -49,6 +45,14 @@ function PinLocations:GetInfoForMap(mapID)
     end
     for _, dungeonInfo in next, C_EncounterJournal.GetDungeonEntrancesForMap(mapID) do
         self.cache[mapID][dungeonInfo.areaPoiID] = dungeonInfo;
+    end
+
+    local pins = self.cache[mapID];
+    for _, dungeonInfo in pairs(pins) do
+        local override = self.dataOverrides[mapID] and self.dataOverrides[mapID][dungeonInfo.journalInstanceID];
+        if override then
+            dungeonInfo.position = CreateVector2D(override.zoneX, override.zoneY);
+        end
     end
 
     return CopyTablePartial(self.cache[mapID]);
