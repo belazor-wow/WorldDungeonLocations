@@ -32,7 +32,19 @@ function WorldDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID
     for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(mapID) do
         if not entranceIgnoreList[dungeonInfo.journalInstanceID] then
             if parentMapID then
-                dungeonInfo.position = CreateVector2D(HBD:TranslateZoneCoordinates(dungeonInfo.position.x, dungeonInfo.position.y, mapID, parentMapID, false));
+                if private.PinLocations.dataOverrides[dungeonInfo.journalInstanceID] ~= nil then
+                    dungeonInfo.position = CreateVector2D(
+                        HBD:TranslateZoneCoordinates(
+                            private.PinLocations.dataOverrides[dungeonInfo.journalInstanceID].pos0,
+                            private.PinLocations.dataOverrides[dungeonInfo.journalInstanceID].pos1,
+                            mapID,
+                            parentMapID,
+                            false
+                        )
+                    )
+                else
+                    dungeonInfo.position = CreateVector2D(HBD:TranslateZoneCoordinates(dungeonInfo.position.x, dungeonInfo.position.y, mapID, parentMapID, false));
+                end
             end
 
             local pin = self:GetMap():AcquirePin(self:GetPinTemplate(), dungeonInfo)

@@ -33,7 +33,7 @@ function PinLocations:GetInfoForMap(mapID)
                 data.name = data.name or EJ_GetInstanceInfo(data.journalInstanceID);
                 self.cache[mapID][data.areaPoiID] = {
                     areaPoiID = data.areaPoiID,
-                    position = CreateVector2D(zoneX, zoneY),
+                    position = position,
                     name = data.name,
                     description = data.atlasName == "Dungeon" and MAP_LEGEND_DUNGEON or MAP_LEGEND_RAID,
                     atlasName = data.atlasName,
@@ -49,6 +49,13 @@ function PinLocations:GetInfoForMap(mapID)
 
     return CopyTablePartial(self.cache[mapID]);
 end
+
+--[[
+    Overrides continent map coordinates for certain journalInstanceID's
+]]
+PinLocations.dataOverrides = {
+    [362] = { pos0 = 0.09670093238354, pos1 = 0.098636311590672 }, -- Throne of Thunder
+}
 
 --[[
 Missing locations:
