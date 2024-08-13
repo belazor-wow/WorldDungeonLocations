@@ -1,3 +1,4 @@
+local AddOnFolderName = ... ---@type string
 local private = select(2, ...) ---@class PrivateNamespace
 
 local HBD = LibStub('HereBeDragons-2.0');
@@ -37,6 +38,7 @@ function WDLMultiDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMa
                 shouldGlow = false,
                 isPrimaryMapForPOI = true,
                 position = CreateVector2D(x, y),
+                zonePosition = { mapID = mapID, position = pin.position },
                 dataProvider = WDLMultiDungeonEntranceDataProviderMixin,
             };
 
@@ -64,6 +66,8 @@ function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData()
     end, geterrorhandler());
 end
 
+local tomTomInstructionText = '<Alt Right Click to set TomTom waypoint>'
+
 --[[ Pin ]]--
 WDLMultiDungeonEntrancePinMixin = BaseMapPoiPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DUNGEON_ENTRANCE");    --PIN_FRAME_LEVEL_WORLD_QUEST, PIN_FRAME_LEVEL_VIGNETTE
 
@@ -87,15 +91,15 @@ function WDLMultiDungeonEntrancePinMixin:UseTooltip()
 end
 
 function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
-	if self:UseTooltip() then
-		local tooltip = GetAppropriateTooltip();
-		tooltip:SetOwner(self, "ANCHOR_RIGHT");
-		local name, description = self:GetBestNameAndDescription();
-		GameTooltip_SetTitle(tooltip, name);
+    if self:UseTooltip() then
+        local tooltip = GetAppropriateTooltip();
+        tooltip:SetOwner(self, "ANCHOR_RIGHT");
+        local name, description = self:GetBestNameAndDescription();
+        GameTooltip_SetTitle(tooltip, name);
 
-		if description then
-			GameTooltip_AddNormalLine(tooltip, description);
-		end
+        if description then
+            GameTooltip_AddNormalLine(tooltip, description);
+        end
 
         for _, dungeonEntranceInfo in pairs(self.dungeonEntranceInfo) do
             local instanceID = dungeonEntranceInfo.journalInstanceID;
@@ -112,13 +116,17 @@ function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
             end
         end
 
-		local instructionLine = self:GetTooltipInstructions();
-		if instructionLine then
-			GameTooltip_AddInstructionLine(tooltip, instructionLine, false);
-		end
+        local instructionLine = self:GetTooltipInstructions();
+        if instructionLine then
+            GameTooltip_AddInstructionLine(tooltip, instructionLine, false);
+        end
 
-		tooltip:Show();
-	end
+        if TomTom then
+            GameTooltip_AddInstructionLine(tooltip, tomTomInstructionText, false);
+        end
+
+        tooltip:Show();
+    end
 end
 
 function WDLMultiDungeonEntrancePinMixin:OnAcquired(poiInfo, multiDungeonEntranceInfo, multiDungeonMapOverrideInfo)
@@ -142,11 +150,27 @@ function WDLMultiDungeonEntrancePinMixin:OnAcquired(poiInfo, multiDungeonEntranc
     self.mapOverrideInfo = multiDungeonMapOverrideInfo;
 end
 
+function WDLMultiDungeonEntrancePinMixin:ShouldMouseButtonBePassthrough(button)
+	-- Dungeon entrances allow left click to set waypoint and right click to open journal.
+	-- Other buttons don't matter at this time.
+	return false;
+end
+
 function WDLMultiDungeonEntrancePinMixin:OnMouseClickAction(button)
     if button == "LeftButton" then
         local uiMapPoint = UiMapPoint.CreateFromVector2D(self:GetMap():GetMapID(), self.poiInfo.position, 0);
         C_Map.SetUserWaypoint(uiMapPoint);
         C_SuperTrack.SetSuperTrackedUserWaypoint(true);
+    end
+
+    if button == "RightButton" and TomTom and IsAltKeyDown() then
+        TomTom:AddWaypoint(self.poiInfo.zonePosition.mapID, self.poiInfo.zonePosition.position.x, self.poiInfo.zonePosition.position.y, {
+            title = self.name,
+            from = AddOnFolderName,
+            persistent = nil,
+            minimap = true,
+            world = true
+        })
     end
 end
 

@@ -18,11 +18,14 @@ end
 PinLocations.cache = {};
 
 --- @param mapID number
+--- @param parentMapID number?
 --- @return table<number, WDL_PinInfo>
-function PinLocations:GetInfoForMap(mapID)
+function PinLocations:GetInfoForMap(mapID, parentMapID)
     if mapID == AZEROTH_MAP_ID then return {}; end -- don't show them on the azeroth map
-    if self.cache[mapID] then return CopyTablePartial(self.cache[mapID]); end
-    self.cache[mapID] = {};
+    self.cache[mapID] = self.cache[mapID] or {};
+    parentMapID = parentMapID or -1;
+    if self.cache[mapID][parentMapID] then return CopyTablePartial(self.cache[mapID][parentMapID]); end
+    self.cache[mapID][parentMapID] = {};
 
     for _, data in next, self.data do
         local zoneX, zoneY = HBD:GetZoneCoordinatesFromWorld(data.pos1, data.pos0, mapID, false)
@@ -31,9 +34,10 @@ function PinLocations:GetInfoForMap(mapID)
             local continentID, _ = C_Map.GetWorldPosFromMapPos(mapID, position);
             if continentID == data.continentID then
                 data.name = data.name or EJ_GetInstanceInfo(data.journalInstanceID);
-                self.cache[mapID][data.areaPoiID] = {
+                self.cache[mapID][parentMapID][data.areaPoiID] = {
                     areaPoiID = data.areaPoiID,
                     position = position,
+                    zonePosition = { mapID = mapID, position = position },
                     name = data.name,
                     description = data.atlasName == "Dungeon" and MAP_LEGEND_DUNGEON or MAP_LEGEND_RAID,
                     atlasName = data.atlasName,
@@ -44,18 +48,43 @@ function PinLocations:GetInfoForMap(mapID)
         end
     end
     for _, dungeonInfo in next, C_EncounterJournal.GetDungeonEntrancesForMap(mapID) do
-        self.cache[mapID][dungeonInfo.areaPoiID] = dungeonInfo;
+        dungeonInfo.zonePosition = { mapID = mapID, position = dungeonInfo.position }
+        self.cache[mapID][parentMapID][dungeonInfo.areaPoiID] = dungeonInfo;
+    end
+    if parentMapID > -1 then
+        local pins = self.cache[mapID][parentMapID];
+        for _, pinInfo in next, pins do
+            self:ApplyZoneCoordinateTranslation(pinInfo, mapID, parentMapID);
+        end
     end
 
-    return CopyTablePartial(self.cache[mapID]);
+    return CopyTablePartial(self.cache[mapID][parentMapID]);
+end
+
+--- @param pinInfo WDL_PinInfo
+--- @param mapID number
+--- @param parentMapID number
+--- @private
+function PinLocations:ApplyZoneCoordinateTranslation(pinInfo, mapID, parentMapID)
+    local override = self.dataOverrides[pinInfo.journalInstanceID] and self.dataOverrides[pinInfo.journalInstanceID][parentMapID];
+    if override then
+        pinInfo.position = CreateVector2D(override.zoneX, override.zoneY);
+
+        return;
+    end
+    pinInfo.position = CreateVector2D(HBD:TranslateZoneCoordinates(pinInfo.position.x, pinInfo.position.y, mapID, parentMapID, false));
 end
 
 --[[
-    Overrides continent map coordinates for certain journalInstanceID's
+    Overrides map coordinates for certain journalInstanceID's
 ]]
+--- @type table<number, table<number, {zoneX: number, zoneY: number}>> # [journalInstanceID][parentMapID] = positionOverride
+--- @private
 PinLocations.dataOverrides = {
-    [362] = { pos0 = 0.09670093238354, pos1 = 0.098636311590672 }, -- Throne of Thunder
-}
+    [362] = { -- Throne of Thunder
+        [424] = { zoneX = 0.24396495365692, zoneY = 0.090617580118319 }, -- Pandaria continent map
+    },
+};
 
 --[[
 Missing locations:
@@ -65,6 +94,7 @@ Missing locations:
 --]]
 
 -- generated from .query/PinLocations.sql
+--- @private
 PinLocations.data = {
     { journalInstanceID = 63, areaPoiID = 6500, atlasName = "Dungeon", pos0 = -11071.00000000000, pos1 = 1527.07995605470, continentID = 0 }, -- Deadmines
     { journalInstanceID = 64, areaPoiID = 6725, atlasName = "Dungeon", pos0 = -234.22999572754, pos1 = 1563.19995117190, continentID = 0 }, -- Shadowfang Keep
