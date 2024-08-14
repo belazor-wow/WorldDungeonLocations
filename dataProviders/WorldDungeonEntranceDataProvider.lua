@@ -1,7 +1,8 @@
 local AddOnFolderName = ... ---@type string
 local private = select(2, ...); ---@class PrivateNamespace
 
-local HBD = LibStub('HereBeDragons-2.0');
+---@type Localizations
+local L = LibStub("AceLocale-3.0"):GetLocale(AddOnFolderName)
 
 -- remove the default provider
 for dp in next, WorldMapFrame.dataProviders do
@@ -74,9 +75,6 @@ WorldDungeonEntrancePinMixin = CreateFromMixins(DungeonEntrancePinMixin)
 function WorldDungeonEntrancePinMixin:UpdateMousePropagation() end
 function WorldDungeonEntrancePinMixin:DoesMapTypeAllowSuperTrack() return true; end
 
-local teleportInstructionText = '<' .. StripHyperlinks(WARDROBE_SHORTCUTS_TUTORIAL_2):gsub('[[%]]', '') .. ': ' .. TELEPORT_TO_DUNGEON .. '>';
-local tomTomInstructionText = '<Alt Right Click to set TomTom waypoint>'
-
 function WorldDungeonEntrancePinMixin:OnMouseClickAction(button)
     if button == "RightButton" and TomTom and IsAltKeyDown() then
         TomTom:AddWaypoint(self.poiInfo.zonePosition.mapID, self.poiInfo.zonePosition.position.x, self.poiInfo.zonePosition.position.y, {
@@ -131,9 +129,9 @@ function WorldDungeonEntrancePinMixin:CheckShowTooltip()
             private.teleportButton:SetParentAndSpell(self, spellID);
             local isAvailable = not cooldownDuration and not InCombatLockdown();
             if isAvailable then
-                GameTooltip_AddInstructionLine(tooltip, teleportInstructionText, false);
+                GameTooltip_AddInstructionLine(tooltip, L["SHIFT_CLICK_TELEPORT_DUNGEON"], false);
             else
-                GameTooltip_AddDisabledLine(tooltip, teleportInstructionText, false);
+                GameTooltip_AddDisabledLine(tooltip, L["SHIFT_CLICK_TELEPORT_DUNGEON"], false);
             end
             if cooldownDuration then
                 local minutes = (cooldownDuration / 60) % 60;
@@ -149,7 +147,7 @@ function WorldDungeonEntrancePinMixin:CheckShowTooltip()
         end
 
         if TomTom then
-            GameTooltip_AddInstructionLine(tooltip, tomTomInstructionText, false);
+            GameTooltip_AddInstructionLine(tooltip, L["ALT_RIGHT_CLICK_TOMTOM_WAYPOINT"], false);
         end
 
         tooltip:Show();

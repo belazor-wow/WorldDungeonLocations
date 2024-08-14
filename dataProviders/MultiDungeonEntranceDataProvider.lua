@@ -1,6 +1,9 @@
 local AddOnFolderName = ... ---@type string
 local private = select(2, ...) ---@class PrivateNamespace
 
+---@type Localizations
+local L = LibStub("AceLocale-3.0"):GetLocale(AddOnFolderName)
+
 local HBD = LibStub('HereBeDragons-2.0');
 
 local WDLMultiDungeonEntranceDataProviderMixin = CreateFromMixins(CVarMapCanvasDataProviderMixin);
@@ -66,8 +69,6 @@ function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData()
     end, geterrorhandler());
 end
 
-local tomTomInstructionText = '<Alt Right Click to set TomTom waypoint>'
-
 --[[ Pin ]]--
 WDLMultiDungeonEntrancePinMixin = BaseMapPoiPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DUNGEON_ENTRANCE");    --PIN_FRAME_LEVEL_WORLD_QUEST, PIN_FRAME_LEVEL_VIGNETTE
 
@@ -122,7 +123,7 @@ function WDLMultiDungeonEntrancePinMixin:CheckShowTooltip()
         end
 
         if TomTom then
-            GameTooltip_AddInstructionLine(tooltip, tomTomInstructionText, false);
+            GameTooltip_AddInstructionLine(tooltip, L["ALT_RIGHT_CLICK_TOMTOM_WAYPOINT"], false);
         end
 
         tooltip:Show();
