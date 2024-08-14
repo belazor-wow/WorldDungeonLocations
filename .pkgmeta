@@ -1,5 +1,15 @@
+package-as: WorldDungeonLocations
+enable-nolib-creation: no
+wowi-archive-previous: no
 
 externals:
     libs/CallbackHandler-1.0: https://repos.wowace.com/wow/ace3/trunk/CallbackHandler-1.0
     libs/LibStub: https://repos.wowace.com/wow/ace3/trunk/LibStub
     libs/HereBeDragons: https://repos.wowace.com/wow/herebedragons
+    libs/AceLocale-3.0: https://repos.wowace.com/wow/ace3/trunk/AceLocale-3.0
+
+license-output: LICENSE.txt
+ignore:
+  - README.md
+  - _MACOSX
+  - .previews
