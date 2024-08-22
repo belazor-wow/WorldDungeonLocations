@@ -13,3 +13,5 @@ end
 
 L["ALT_RIGHT_CLICK_TOMTOM_WAYPOINT"] = "<Alt Right Click to set TomTom waypoint>"
 L["SHIFT_CLICK_TELEPORT_DUNGEON"] = "<Shift Click to teleport to dungeon>"
+L["MULTIPLE_INSTANCES"] = "Multiple instances"
+L["MULTIPLE_INSTANCES_DESCR"] = "An entrance providing access to multiple separate dungeon or raid instances"

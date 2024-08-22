@@ -1,6 +1,9 @@
 local AddOnFolderName = ... ---@type string
 local private = select(2, ...) ---@class PrivateNamespace
 
+---@type Localizations
+local L = LibStub("AceLocale-3.0"):GetLocale(AddOnFolderName)
+
 ---@type Array<Dictionary<string>>
 private.savedInstances = {}
 
@@ -50,8 +53,8 @@ private.MapLegendData = {
     CategoryData = {
         {
             Name = "WDLMapLegendMultiDungeonButton",
-            Text = "Multiple instances",
-            Tooltip = "An entrance providing access to multiple separate dungeon or raid instances",
+            Text = L["MULTIPLE_INSTANCES"],
+            Tooltip = L["MULTIPLE_INSTANCES_DESCR"],
             TemplateNames = {"WDLMultiDungeonEntrancePinTemplate"}
         },
     }
