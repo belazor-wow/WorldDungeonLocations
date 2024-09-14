@@ -5,6 +5,8 @@ private.PinLocations = PinLocations;
 
 local HBD = LibStub('HereBeDragons-2.0');
 local AZEROTH_MAP_ID = 947;
+local ISLE_OF_DORN_MAP_ID = 2248;
+local KHAZ_ALGAR_MAP_ID = 2274;
 
 local function CopyTablePartial(tbl)
     local newTbl = {};
@@ -72,7 +74,14 @@ function PinLocations:ApplyZoneCoordinateTranslation(pinInfo, mapID, parentMapID
 
         return;
     end
-    pinInfo.position = CreateVector2D(HBD:TranslateZoneCoordinates(pinInfo.position.x, pinInfo.position.y, mapID, parentMapID, false));
+    local tX, tY = HBD:TranslateZoneCoordinates(pinInfo.position.x, pinInfo.position.y, mapID, parentMapID, false);
+    if not tX and mapID == ISLE_OF_DORN_MAP_ID then
+        -- Isle of Dorn is a bit silly, and not yet handled by HBD
+        local minX, maxX, minY, maxY = C_Map.GetMapRectOnMap(ISLE_OF_DORN_MAP_ID, KHAZ_ALGAR_MAP_ID);
+        tX = Lerp(minX, maxX, pinInfo.position.x);
+        tY = Lerp(minY, maxY, pinInfo.position.y);
+    end
+    pinInfo.position = CreateVector2D(tX, tY);
 end
 
 --[[
