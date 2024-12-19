@@ -167,8 +167,15 @@ function WDL:UPDATE_INSTANCE_INFO()
 end
 
 function WDL:PLAYER_LOGIN()
-    table.insert(_G[MAP_LEGEND_DUNGEON].templates, "WorldDungeonEntrancePinTemplate")
-    table.insert(_G[MAP_LEGEND_RAID].templates, "WorldDungeonEntrancePinTemplate")
+    for _, category in ipairs(MapLegendScrollFrame.ScrollChild:GetLayoutChildren()) do
+        if category.TitleText:GetText() == MAP_LEGEND_CATEGORY_ACTIVITIES then
+            for _, button in ipairs(category:GetLayoutChildren()) do
+                if button.nameText == MAP_LEGEND_DUNGEON or button.nameText == MAP_LEGEND_RAID then
+                    table.insert(button.templates, "WorldDungeonEntrancePinTemplate")
+                end
+            end
+        end
+    end
 
     local index = 3;
     local category = CreateFrame("Frame", private.MapLegendData.CategoryTitle, QuestMapFrame.MapLegend.ScrollFrame.ScrollChild, "MapLegendCategoryTemplate", index);
