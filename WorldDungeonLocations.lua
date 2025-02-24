@@ -173,6 +173,10 @@ function WDL:PLAYER_LOGIN()
                 if button.nameText == MAP_LEGEND_DUNGEON or button.nameText == MAP_LEGEND_RAID then
                     table.insert(button.templates, "WorldDungeonEntrancePinTemplate")
                 end
+
+                if button.nameText == MAP_LEGEND_DELVE then
+                    table.insert(button.templates, "WDLDelveEntrancePinTemplate")
+                end
             end
         end
     end

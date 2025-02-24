@@ -34,5 +34,6 @@ MapLegend/MapLegendFrame.xml
 
 dataProviders/WorldDungeonEntranceDataProvider.xml
 dataProviders/MultiDungeonEntranceDataProvider.xml
+dataProviders/DelveEntranceDataProvider.xml
 
 Debug.lua
