@@ -1,6 +1,6 @@
 name: "Bug report"
 description: Create a report to help us improve
-labels: bug
+labels: [bug]
 assignees: filliph
 body:
 - type: markdown
@@ -25,7 +25,7 @@ body:
       - Retail PTR
   validations:
     required: true
- 
+
 - type: input
   attributes:
     label: WorldDungeonLocations Version
@@ -33,7 +33,7 @@ body:
       You can see the current version in the CurseForge app or similar
     placeholder: "1.0.0"
   validations:
-    required: true    
+    required: true
 
 
 - type: dropdown
@@ -58,7 +58,7 @@ body:
       4. See error
   validations:
     required: true
-    
+
 - type: textarea
   attributes:
     label: Lua Error
