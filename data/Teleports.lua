@@ -26,9 +26,11 @@ end
 TeleportMap.data = {
     ['Alliance'] = {
         [1023] = 445418, -- ALLIANCE - Siege of Boralus
+        [1012] = 467553, -- ALLIANCE - The MOTHERLODE!!
     },
     ['Horde'] = {
         [1023] = 464256, -- HORDE - Siege of Boralus
+        [1012] = 467555, -- HORDE - The MOTHERLODE!!
     },
     ['Neutral'] = {
         [65] = 424142, -- Throne of the Tides
