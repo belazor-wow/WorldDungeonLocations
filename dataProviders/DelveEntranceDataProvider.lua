@@ -58,6 +58,8 @@ end
 --[[ Pin ]]--
 WDLDelveEntrancePinMixin = AreaPOIPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DELVE_ENTRANCE");    --PIN_FRAME_LEVEL_WORLD_QUEST, PIN_FRAME_LEVEL_VIGNETTE
 
+function WDLDelveEntrancePinMixin:UpdateMousePropagation() end
+
 function WDLDelveEntrancePinMixin:DoesMapTypeAllowSuperTrack()
 	local mapInfo = C_Map.GetMapInfo(self:GetMap():GetMapID())
 	if mapInfo then

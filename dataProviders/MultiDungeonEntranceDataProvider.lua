@@ -72,6 +72,8 @@ end
 --[[ Pin ]]--
 WDLMultiDungeonEntrancePinMixin = BaseMapPoiPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DUNGEON_ENTRANCE");    --PIN_FRAME_LEVEL_WORLD_QUEST, PIN_FRAME_LEVEL_VIGNETTE
 
+function WDLMultiDungeonEntrancePinMixin:UpdateMousePropagation() end
+
 function WDLMultiDungeonEntrancePinMixin:OnLoad()
     BaseMapPoiPinMixin.OnLoad(self);
 
