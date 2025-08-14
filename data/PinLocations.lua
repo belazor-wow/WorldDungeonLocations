@@ -275,4 +275,9 @@ PinLocations.data = {
     { journalInstanceID = 1272, areaPoiID = 7857, atlasName = "Dungeon", pos0 = 2646.9599609375, pos1 = -4881.9301757812, continentID = 2552 }, -- Cinderbrew Meadery
     { journalInstanceID = 1273, areaPoiID = 7546, atlasName = "Raid", pos0 = -2592.1999511719, pos1 = -524.44097900391, continentID = 2601 }, -- Nerub-ar Palace
     { journalInstanceID = 1274, areaPoiID = 7548, atlasName = "Dungeon", pos0 = -1623.5400390625, pos1 = -743.47399902344, continentID = 2601 }, -- City of Threads
+    { journalInstanceID = 1296, areaPoiID = 8240, atlasName = "Raid", pos0 = 30.28472328186, pos1 = 563.92706298828, continentID = 2706 }, -- Liberation of Undermine
+    { journalInstanceID = 1298, areaPoiID = 8162, atlasName = "Dungeon", pos0 = 1931.6800537109, pos1 = -2686.1201171875, continentID = 2601 }, -- Operation: Floodgate
+    { journalInstanceID = 1301, areaPoiID = 6499, atlasName = "Dungeon", pos0 = -7178.8598632812, pos1 = -926.03497314453, continentID = 0 }, -- Blackrock Depths
+    { journalInstanceID = 1302, areaPoiID = 8363, atlasName = "Raid", pos0 = 2027.5300292969, pos1 = 1789.5, continentID = 2738 }, -- Manaforge Omega
+    { journalInstanceID = 1303, areaPoiID = 8321, atlasName = "Dungeon", pos0 = -558.29302978516, pos1 = -160.96899414063, continentID = 2738 }, -- Eco-Dome Al'dani
 };
