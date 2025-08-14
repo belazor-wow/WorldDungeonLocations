@@ -91,11 +91,14 @@ TeleportMap.data = {
         [1271] = 445417, -- Ara-Kara, City of Echoes
         [1272] = 445440, -- Cinderbrew Meadery
         [1274] = 445416, -- City of Threads
+        [1298] = 1216786, -- Operation: Floodgate
         [1190] = 373190, -- Raid: Castle Nathria
         [1193] = 373191, -- Raid: Sanctum of Domination
         [1195] = 373192, -- Raid: Sepulcher of the First Ones
         [1200] = 432254, -- Raid: Vault of the Incarnates
         [1207] = 432258, -- Raid: Amirdrassil, the Dream's Hope
         [1208] = 432257, -- Raid: Aberrus, the Shadowed Crucible
+        [1296] = 1226482, -- Raid: Liberation of Undermine
+        [1302] = 1239155, -- Raid: Manaforge Omega
     },
 };
