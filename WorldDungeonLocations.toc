@@ -1,4 +1,4 @@
-## Interface: 110200
+## Interface: 110205
 ## Title: WorldDungeonLocations
 ## Notes: Shows Blizzard's dungeon and raid locations on the world map
 ## OptionalDeps: _DebugLog
