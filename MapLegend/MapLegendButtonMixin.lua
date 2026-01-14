@@ -12,7 +12,7 @@ function WDLMapLegendButtonMixin:InitializeButton(buttonInfo, index)
     end
     self:SetText(buttonInfo.Text);
     self:Show();
-	self.nameText = buttonInfo.Text;
+    self.nameText = buttonInfo.Text;
     self.layoutIndex = index;
     self.tooltipText = buttonInfo.Tooltip;
     self.templates = buttonInfo.TemplateNames;
