@@ -181,7 +181,7 @@ function WDL:PLAYER_LOGIN()
         end
     end
 
-    local index = 3;
+    local index = 3.5;
     local category = CreateFrame("Frame", private.MapLegendData.CategoryTitle, QuestMapFrame.MapLegend.ScrollFrame.ScrollChild, "MapLegendCategoryTemplate", index);
     category.TitleText:SetText(private.MapLegendData.CategoryTitle);
     category.layoutIndex = index;
