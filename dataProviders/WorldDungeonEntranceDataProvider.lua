@@ -51,8 +51,14 @@ function WorldDungeonEntranceDataProviderMixin:RemoveAllData()
 end
 
 function WorldDungeonEntranceDataProviderMixin:RefreshAllData()
-    xpcall(function() -- by default, errors from dataproviders are silenced
-        self:RemoveAllData();
+    self:RemoveAllData();
+
+    if InCombatLockdown() then
+        self.needsRefresh = true;
+        return;
+    end
+
+    xpcall(function()
         if not self:IsCVarSet() then
             return;
         end
@@ -66,7 +72,18 @@ function WorldDungeonEntranceDataProviderMixin:RefreshAllData()
         else
             self:RenderDungeons(mapID);
         end
-    end, geterrorhandler());
+    end, nop);
+end
+
+do
+    local combatEndFrame = CreateFrame("Frame");
+    combatEndFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
+    combatEndFrame:SetScript("OnEvent", function()
+        if WorldDungeonEntranceDataProviderMixin.needsRefresh then
+            WorldDungeonEntranceDataProviderMixin.needsRefresh = nil;
+            WorldDungeonEntranceDataProviderMixin:RefreshAllData();
+        end
+    end);
 end
 
 -- Create new dungeon entrance pin mixin

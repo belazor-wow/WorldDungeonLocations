@@ -51,8 +51,14 @@ function WDLMultiDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMa
 end
 
 function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData()
-    xpcall(function() -- by default, errors from dataproviders are silenced
-        self:RemoveAllData();
+    self:RemoveAllData();
+
+    if InCombatLockdown() then
+        self.needsRefresh = true;
+        return;
+    end
+
+    xpcall(function()
         if not self:IsCVarSet() then
             return;
         end
@@ -66,7 +72,18 @@ function WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData()
         else
             self:RenderDungeons(mapID);
         end
-    end, geterrorhandler());
+    end, nop);
+end
+
+do
+    local combatEndFrame = CreateFrame("Frame");
+    combatEndFrame:RegisterEvent("PLAYER_REGEN_ENABLED");
+    combatEndFrame:SetScript("OnEvent", function()
+        if WDLMultiDungeonEntranceDataProviderMixin.needsRefresh then
+            WDLMultiDungeonEntranceDataProviderMixin.needsRefresh = nil;
+            WDLMultiDungeonEntranceDataProviderMixin:RefreshAllData();
+        end
+    end);
 end
 
 --[[ Pin ]]--
