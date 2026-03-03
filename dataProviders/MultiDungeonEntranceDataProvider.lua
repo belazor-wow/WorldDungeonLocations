@@ -73,6 +73,7 @@ end
 WDLMultiDungeonEntrancePinMixin = BaseMapPoiPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DUNGEON_ENTRANCE");    --PIN_FRAME_LEVEL_WORLD_QUEST, PIN_FRAME_LEVEL_VIGNETTE
 
 function WDLMultiDungeonEntrancePinMixin:UpdateMousePropagation() end
+function WDLMultiDungeonEntrancePinMixin:SetPassThroughButtons() end
 
 function WDLMultiDungeonEntrancePinMixin:OnLoad()
     BaseMapPoiPinMixin.OnLoad(self);
@@ -154,9 +155,9 @@ function WDLMultiDungeonEntrancePinMixin:OnAcquired(poiInfo, multiDungeonEntranc
 end
 
 function WDLMultiDungeonEntrancePinMixin:ShouldMouseButtonBePassthrough(button)
-	-- Dungeon entrances allow left click to set waypoint and right click to open journal.
-	-- Other buttons don't matter at this time.
-	return false;
+    -- Dungeon entrances allow left click to set waypoint and right click to open journal.
+    -- Other buttons don't matter at this time.
+    return false;
 end
 
 function WDLMultiDungeonEntrancePinMixin:OnMouseClickAction(button)

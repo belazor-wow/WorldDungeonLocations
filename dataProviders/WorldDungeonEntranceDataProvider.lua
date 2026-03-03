@@ -74,6 +74,7 @@ WorldDungeonEntrancePinMixin = CreateFromMixins(DungeonEntrancePinMixin)
 
 function WorldDungeonEntrancePinMixin:UpdateMousePropagation() end
 function WorldDungeonEntrancePinMixin:DoesMapTypeAllowSuperTrack() return true; end
+function WorldDungeonEntrancePinMixin:SetPassThroughButtons() end
 
 ---@diagnostic disable-next-line: duplicate-set-field
 function WorldDungeonEntrancePinMixin:OnMouseClickAction(button)

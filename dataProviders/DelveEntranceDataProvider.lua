@@ -59,16 +59,17 @@ end
 WDLDelveEntrancePinMixin = AreaPOIPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DELVE_ENTRANCE");    --PIN_FRAME_LEVEL_WORLD_QUEST, PIN_FRAME_LEVEL_VIGNETTE
 
 function WDLDelveEntrancePinMixin:UpdateMousePropagation() end
+function WDLDelveEntrancePinMixin:SetPassThroughButtons() end
 
 function WDLDelveEntrancePinMixin:DoesMapTypeAllowSuperTrack()
-	local mapInfo = C_Map.GetMapInfo(self:GetMap():GetMapID())
-	if mapInfo then
-		return mapInfo.mapType >= Enum.UIMapType.Continent
-	end
+    local mapInfo = C_Map.GetMapInfo(self:GetMap():GetMapID())
+    if mapInfo then
+        return mapInfo.mapType >= Enum.UIMapType.Continent
+    end
 end
 
 function WDLDelveEntrancePinMixin:GetSuperTrackMarkerOffset()
-	return -7, 7;
+    return -7, 7;
 end
 
 function WDLDelveEntrancePinMixin:OnMouseClickAction(button)
