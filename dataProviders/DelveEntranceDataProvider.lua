@@ -29,6 +29,7 @@ function WDLDelveEntranceDataProviderMixin:RenderDelves(mapID, parentMapID)
                         Lerp(minX, maxX, x),
                         Lerp(minY, maxY, y)
                     )
+                    poiInfo.zonePosition = { mapID = mapID, position = CreateVector2D(x, y) }
                     poiInfo.dataProvider = self
 
                     self:GetMap():AcquirePin(self:GetPinTemplate(), poiInfo)
@@ -48,6 +49,7 @@ function WDLDelveEntranceDataProviderMixin:RefreshAllData()
         local mapID = self:GetMap():GetMapID();
         local mapInfo = private.GetMapInfo(mapID);
         if mapInfo.mapType == Enum.UIMapType.Continent then
+            RunNextFrame(function() DelveEntranceDataProviderMixin.RemoveAllData(self) end)
             for _, childInfo in next, C_Map.GetMapChildrenInfo(mapID, Enum.UIMapType.Zone, true) do
                 self:RenderDelves(childInfo.mapID, mapID);
             end
@@ -56,7 +58,7 @@ function WDLDelveEntranceDataProviderMixin:RefreshAllData()
 end
 
 --[[ Pin ]]--
-WDLDelveEntrancePinMixin = AreaPOIPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DELVE_ENTRANCE");    --PIN_FRAME_LEVEL_WORLD_QUEST, PIN_FRAME_LEVEL_VIGNETTE
+WDLDelveEntrancePinMixin = AreaPOIPinMixin:CreateSubPin("PIN_FRAME_LEVEL_DELVE_ENTRANCE"); --PIN_FRAME_LEVEL_WORLD_QUEST, PIN_FRAME_LEVEL_VIGNETTE
 
 function WDLDelveEntrancePinMixin:UpdateMousePropagation() end
 function WDLDelveEntrancePinMixin:SetPassThroughButtons() end
