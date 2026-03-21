@@ -9,6 +9,20 @@ local HBD = LibStub('HereBeDragons-2.0');
 local WDLDelveEntranceDataProviderMixin = CreateFromMixins(DelveEntranceDataProviderMixin);
 WDLDelveEntranceDataProviderMixin:Init("showDelveEntrancesOnMap");
 
+function WDLDelveEntranceDataProviderMixin:OnAdded(owningMap)
+    DelveEntranceDataProviderMixin.OnAdded(self, owningMap);
+    --- @param mapFrame MapCanvasMixin
+    --- @param pinTemplate string
+    hooksecurefunc(owningMap, 'AcquirePin', function(mapFrame, pinTemplate)
+        if pinTemplate ~= "DelveEntrancePinTemplate" then return end
+        local mapID = mapFrame:GetMapID();
+        local mapInfo = private.GetMapInfo(mapID);
+        if mapInfo.mapType == Enum.UIMapType.Continent then
+            mapFrame:RemoveAllPinsByTemplate(pinTemplate);
+        end
+    end);
+end
+
 function WDLDelveEntranceDataProviderMixin:GetPinTemplate()
     return "WDLDelveEntrancePinTemplate";
 end
@@ -49,7 +63,6 @@ function WDLDelveEntranceDataProviderMixin:RefreshAllData()
         local mapID = self:GetMap():GetMapID();
         local mapInfo = private.GetMapInfo(mapID);
         if mapInfo.mapType == Enum.UIMapType.Continent then
-            RunNextFrame(function() DelveEntranceDataProviderMixin.RemoveAllData(self) end)
             for _, childInfo in next, C_Map.GetMapChildrenInfo(mapID, Enum.UIMapType.Zone, true) do
                 self:RenderDelves(childInfo.mapID, mapID);
             end
