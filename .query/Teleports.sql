@@ -1,5 +1,5 @@
 SELECT
-    CONCAT('        [', q.ID, '] = { ', GROUP_CONCAT(DISTINCT q.spellID SEPARATOR ', '), ' }, -- ', q.name) AS result
+    CONCAT('    [', q.ID, '] = { ', GROUP_CONCAT(DISTINCT q.spellID SEPARATOR ', '), ' }, -- ', q.name) AS result
 FROM (
     SELECT -- dungeon teleports
         ji.ID,
@@ -18,7 +18,7 @@ FROM (
         s.Description_lang LIKE 'Teleport to the entrance %'
 
 UNION ALL
-    SELECT -- raid teleports (also includes some dungeons, they'll have to manually filtered out
+    SELECT -- raid teleports (also includes some dungeons, they're filtered out by the GROUP BY)
         ji.ID,
         s.ID as spellID,
         CONCAT('RAID: ', s.NameSubtext_lang) as name,
@@ -29,5 +29,5 @@ UNION ALL
     WHERE
         s.NameSubtext_lang IS NOT NULL AND s.Description_lang LIKE 'Teleport to the entrance of %'
 ) q
-GROUP BY q.ID, q.categoryOrder
+GROUP BY q.ID
 ORDER BY q.categoryOrder, q.ID

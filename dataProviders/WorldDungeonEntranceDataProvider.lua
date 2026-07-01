@@ -20,13 +20,13 @@ function WorldDungeonEntranceDataProviderMixin:GetPinTemplate()
 end
 
 function WorldDungeonEntranceDataProviderMixin:RenderDungeons(mapID, parentMapID)
-    local mapOverrideInfo = private.mapOverrides[mapID] or {};
-
     local entranceIgnoreList = {}; -- already handled by the MultiDungeonEntranceDataProvider, skip them here
-    for _, pin in ipairs(mapOverrideInfo) do
-        for _, childMapId in ipairs(pin.childMapIds) do
-            for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(childMapId) do
-                entranceIgnoreList[dungeonInfo.journalInstanceID] = true;
+    for _, mapOverrideInfo in pairs(private.mapOverrides) do
+        for _, pin in ipairs(mapOverrideInfo) do
+            for _, childMapId in ipairs(pin.childMapIds) do
+                for _, dungeonInfo in next, private.PinLocations:GetInfoForMap(childMapId) do
+                    entranceIgnoreList[dungeonInfo.journalInstanceID] = true;
+                end
             end
         end
     end
@@ -63,6 +63,9 @@ function WorldDungeonEntranceDataProviderMixin:RefreshAllData()
             for _, childInfo in next, C_Map.GetMapChildrenInfo(mapID, Enum.UIMapType.Zone, true) do
                 self:RenderDungeons(childInfo.mapID, mapID);
             end
+            for _, childMapID in next, private.mapExtraChildren[mapID] or {} do
+                self:RenderDungeons(childMapID, mapID);
+            end
         else
             self:RenderDungeons(mapID);
         end
@@ -88,8 +91,12 @@ function WorldDungeonEntrancePinMixin:OnMouseClickAction(button)
         })
 
         return
-    else
+    elseif self.poiInfo.areaPoiID > 0 then
         SuperTrackablePinMixin.OnMouseClickAction(self, button);
+    else
+        local uiMapPoint = UiMapPoint.CreateFromVector2D(self.poiInfo.zonePosition.mapID, self.poiInfo.zonePosition.position, 0);
+        C_Map.SetUserWaypoint(uiMapPoint);
+        C_SuperTrack.SetSuperTrackedUserWaypoint(true);
     end
 
     if button == "RightButton" then

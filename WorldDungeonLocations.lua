@@ -48,6 +48,15 @@ private.mapOverrides = {
     }
 }
 
+private.mapExtraChildren = {
+    [875] = { -- Zandalar
+        1355, -- Nazjatar
+    },
+    [876] = { -- Kul Tiras
+        1355, -- Nazjatar
+    },
+};
+
 private.MapLegendData = {
     CategoryTitle = AddOnFolderName,
     CategoryData = {
