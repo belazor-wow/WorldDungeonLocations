@@ -28,11 +28,15 @@ function PinLocations:GetInfoForMap(mapID, parentMapID)
     self.cache[mapID][parentMapID] = {};
 
     for _, data in next, self.data do
-        local zoneX, zoneY = HBD:GetZoneCoordinatesFromWorld(data.pos1, data.pos0, mapID, false)
+        local zoneX, zoneY = HBD:GetZoneCoordinatesFromWorld(data.pos1, data.pos0, mapID, false);
+        local overrideInfo = self:GetZoneTranslationOverride(data.journalInstanceID, mapID);
+        if overrideInfo then
+            zoneX, zoneY = overrideInfo.zoneX, overrideInfo.zoneY;
+        end
         if zoneX and zoneY then
             local position = CreateVector2D(zoneX, zoneY);
-            local continentID, _ = C_Map.GetWorldPosFromMapPos(mapID, position);
-            if continentID == data.continentID then
+            local continentID = C_Map.GetWorldPosFromMapPos(mapID, position);
+            if overrideInfo or continentID == data.continentID then
                 data.name = data.name or EJ_GetInstanceInfo(data.journalInstanceID);
                 self.cache[mapID][parentMapID][data.areaPoiID] = {
                     areaPoiID = data.areaPoiID,
@@ -48,8 +52,15 @@ function PinLocations:GetInfoForMap(mapID, parentMapID)
         end
     end
     for _, dungeonInfo in next, C_EncounterJournal.GetDungeonEntrancesForMap(mapID) do
-        dungeonInfo.zonePosition = { mapID = mapID, position = dungeonInfo.position }
-        self.cache[mapID][parentMapID][dungeonInfo.areaPoiID] = dungeonInfo;
+        if not self.dataOverrides[dungeonInfo.journalInstanceID] then
+            local position = dungeonInfo.position;
+            local overrideInfo = self:GetZoneTranslationOverride(dungeonInfo.journalInstanceID, mapID);
+            if overrideInfo then
+                position:SetXY(overrideInfo.zoneX, overrideInfo.zoneY);
+            end
+            dungeonInfo.zonePosition = { mapID = mapID, position = position }
+            self.cache[mapID][parentMapID][dungeonInfo.areaPoiID] = dungeonInfo;
+        end
     end
     if parentMapID > -1 then
         local pins = self.cache[mapID][parentMapID];
@@ -66,7 +77,7 @@ end
 --- @param parentMapID number
 --- @private
 function PinLocations:ApplyZoneCoordinateTranslation(pinInfo, mapID, parentMapID)
-    local override = self.dataOverrides[pinInfo.journalInstanceID] and self.dataOverrides[pinInfo.journalInstanceID][parentMapID];
+    local override = self:GetZoneTranslationOverride(pinInfo.journalInstanceID, parentMapID);
     if override then
         pinInfo.position = CreateVector2D(override.zoneX, override.zoneY);
 
@@ -75,23 +86,61 @@ function PinLocations:ApplyZoneCoordinateTranslation(pinInfo, mapID, parentMapID
     pinInfo.position = CreateVector2D(HBD:TranslateZoneCoordinates(pinInfo.position.x, pinInfo.position.y, mapID, parentMapID, false));
 end
 
+--- @param journalInstanceID number
+--- @param mapID number
+--- @return {zoneX: number, zoneY: number}?
+--- @private
+function PinLocations:GetZoneTranslationOverride(journalInstanceID, mapID)
+    if self.mapTranslationOverrides[journalInstanceID] then
+        return self.mapTranslationOverrides[journalInstanceID][mapID];
+    end
+end
+
 --[[
     Overrides map coordinates for certain journalInstanceID's
 ]]
 --- @type table<number, table<number, {zoneX: number, zoneY: number}>> # [journalInstanceID][parentMapID] = positionOverride
 --- @private
-PinLocations.dataOverrides = {
+PinLocations.mapTranslationOverrides = {
     [362] = { -- Throne of Thunder
         [424] = { zoneX = 0.24396495365692, zoneY = 0.090617580118319 }, -- Pandaria continent map
     },
+    [745] = { -- Karazhan (raid)
+        [13] = { zoneX = 0.4988, zoneY = 0.8470 }, -- Eastern Kingdoms
+    },
+    [945] = { -- Seat of the Triumvirate
+        [619] = { zoneX = 0.8962, zoneY = 0.1209 }, -- Broken Isles
+        [905] = { zoneX = 0.5230, zoneY = 0.3592 }, -- Argus
+    },
+    [946] = { -- Antorus, the Burning Throne
+        [619] = { zoneX = 0.8178, zoneY = 0.2006 }, -- Broken Isles
+        [905] = { zoneX = 0.3220, zoneY = 0.6268 }, -- Argus
+    },
+    [1194] = { -- Tazavesh, the Veiled Market
+        [2274] = { zoneX = 0.1888, zoneY = 0.2488 }, -- Khaz Algar
+    },
+    [1179] = { -- The Eternal Palace
+        [1355] = { zoneX = 0.5053, zoneY = 0.0993 }, -- Nazjatar
+        [875] = { zoneX = 0.8633, zoneY = 0.1133 }, -- Zandalar
+        [876] = { zoneX = 0.8722, zoneY = 0.1076 }, -- Kul Tiras
+    },
+    [1296] = { -- Liberation of Undermine
+        [2274] = { zoneX = 0.7988, zoneY = 0.7262 }, -- Khaz Algar
+    },
+    [1320] = { -- The Venomous Abyss
+        [2512] = { zoneX = 0.8888, zoneY = 0.8162 }, -- The Coiled Isle
+    },
+    [1322] = { -- Altar of Fangs
+        [2512] = { zoneX = 0.8894, zoneY = 0.9423 }, -- The Coiled Isle
+    },
 };
 
---[[
-Missing locations:
-    - Tazavesh (doesn't have a place that really fits)
-    - Eternal Palace
-    - Return to Karazahn (could use Karazahn raid for supertracking)
---]]
+--- @private
+PinLocations.dataOverrides = {
+    [745] = { journalInstanceID = 745, areaPoiID = 6528, atlasName = "Raid", pos0 = -11171, pos1 = -1956, continentID = 0 }, -- Karazhan - move the icon to a more accurate location
+    [860] = { journalInstanceID = 860, areaPoiID = 9528, atlasName = "Dungeon", pos0 = -11062, pos1 = -2039, continentID = 0 }, -- Return to Karazhan - missing from data
+    [1179] = { journalInstanceID = 1179, areaPoiID = -1, atlasName = "Raid", pos0 = -557, pos1 = 2629, continentID = 1718 }, -- The Eternal Palace - missing from data
+};
 
 -- generated from .query/PinLocations.sql
 --- @private
@@ -254,6 +303,7 @@ PinLocations.data = {
     { journalInstanceID = 1189, areaPoiID = 6589, atlasName = "Dungeon", pos0 = -1473.90002441410, pos1 = 6542.77978515620, continentID = 2222 }, -- Sanguine Depths
     { journalInstanceID = 1190, areaPoiID = 6590, atlasName = "Raid", pos0 = -1900.55004882810, pos1 = 6804.50976562500, continentID = 2222 }, -- Castle Nathria
     { journalInstanceID = 1193, areaPoiID = 6994, atlasName = "Raid", pos0 = 4849.50244140620, pos1 = 5779.50634765620, continentID = 2222 }, -- Sanctum of Domination
+    { journalInstanceID = 1194, areaPoiID = 8374, atlasName = "Dungeon", pos0 = -657.52398681641, pos1 = -23.34219932556, continentID = 2738 }, -- Tazavesh, the Veiled Market
     { journalInstanceID = 1195, areaPoiID = 7021, atlasName = "Raid", pos0 = -3829.78002929690, pos1 = -1532.20996093750, continentID = 2374 }, -- Sepulcher of the First Ones
     { journalInstanceID = 1196, areaPoiID = 7209, atlasName = "Dungeon", pos0 = -4472.91992187500, pos1 = 4239.95019531250, continentID = 2444 }, -- Brackenhide Hollow
     { journalInstanceID = 1197, areaPoiID = 7216, atlasName = "Dungeon", pos0 = -6064.89990234380, pos1 = -3164.90991210940, continentID = 0 }, -- Uldaman: Legacy of Tyr
@@ -285,6 +335,7 @@ PinLocations.data = {
     { journalInstanceID = 1302, areaPoiID = 8363, atlasName = "Raid", pos0 = 2027.53002929690, pos1 = 1789.50000000000, continentID = 2738 }, -- Manaforge Omega
     { journalInstanceID = 1303, areaPoiID = 8321, atlasName = "Dungeon", pos0 = -558.29302978516, pos1 = -160.96899414063, continentID = 2738 }, -- Eco-Dome Al'dani
     { journalInstanceID = 1304, areaPoiID = 8217, atlasName = "Dungeon", pos0 = 8630.79980468750, pos1 = -4941.20996093750, continentID = 0 }, -- Murder Row
+    { journalInstanceID = 1305, areaPoiID = 8256, atlasName = "Raid", pos0 = -822.66998291016, pos1 = -1991.43994140620, continentID = 2694 }, -- Sporefall
     { journalInstanceID = 1308, areaPoiID = 8271, atlasName = "Raid", pos0 = 10147.00000000000, pos1 = -4616.85009765620, continentID = 0 }, -- March on Quel'Danas
     { journalInstanceID = 1309, areaPoiID = 8481, atlasName = "Dungeon", pos0 = -1412.68005371090, pos1 = 1574.83996582030, continentID = 2694 }, -- The Blinding Vale
     { journalInstanceID = 1311, areaPoiID = 8472, atlasName = "Dungeon", pos0 = 3257.97998046880, pos1 = -6311.62011718750, continentID = 0 }, -- Den of Nalorakk
@@ -292,4 +343,10 @@ PinLocations.data = {
     { journalInstanceID = 1314, areaPoiID = 8482, atlasName = "Raid", pos0 = -647.70300292969, pos1 = -1069.33996582030, continentID = 2694 }, -- The Dreamrift
     { journalInstanceID = 1315, areaPoiID = 8480, atlasName = "Dungeon", pos0 = 5942.83984375000, pos1 = -7565.14013671880, continentID = 0 }, -- Maisara Caverns
     { journalInstanceID = 1316, areaPoiID = 8644, atlasName = "Dungeon", pos0 = 1466.65002441410, pos1 = -1805.78002929690, continentID = 2771 }, -- Nexus-Point Xenas
+    { journalInstanceID = 1320, areaPoiID = 8930, atlasName = "Raid", pos0 = 5778.25000000000, pos1 = -10400.00000000000, continentID = 2916 }, -- The Venomous Abyss
+    { journalInstanceID = 1322, areaPoiID = 8931, atlasName = "Dungeon", pos0 = 4914.45019531250, pos1 = -10400.20019531200, continentID = 2916 }, -- Altar of Fangs
 };
+
+for k, v in pairs(PinLocations.dataOverrides) do
+    table.insert(PinLocations.data, v)
+end

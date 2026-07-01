@@ -162,7 +162,7 @@ end
 
 function WDLMultiDungeonEntrancePinMixin:OnMouseClickAction(button)
     if button == "LeftButton" then
-        local uiMapPoint = UiMapPoint.CreateFromVector2D(self:GetMap():GetMapID(), self.poiInfo.position, 0);
+        local uiMapPoint = UiMapPoint.CreateFromVector2D(self.poiInfo.zonePosition.mapID, self.poiInfo.zonePosition.position, 0);
         C_Map.SetUserWaypoint(uiMapPoint);
         C_SuperTrack.SetSuperTrackedUserWaypoint(true);
     end
