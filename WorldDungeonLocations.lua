@@ -176,7 +176,7 @@ function WDL:UPDATE_INSTANCE_INFO()
 end
 
 function WDL:PLAYER_LOGIN()
-    for _, category in ipairs(MapLegendScrollFrame.ScrollChild:GetLayoutChildren()) do
+    for _, category in ipairs(MapLegendScrollFrame.ScrollChild:GetLayoutChildren()) do ---@diagnostic disable-line: undefined-field
         if category.TitleText:GetText() == MAP_LEGEND_CATEGORY_ACTIVITIES then
             for _, button in ipairs(category:GetLayoutChildren()) do
                 if button.nameText == MAP_LEGEND_DUNGEON or button.nameText == MAP_LEGEND_RAID then

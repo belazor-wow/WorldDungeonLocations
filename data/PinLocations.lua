@@ -58,7 +58,7 @@ function PinLocations:GetInfoForMap(mapID, parentMapID)
             if overrideInfo then
                 position:SetXY(overrideInfo.zoneX, overrideInfo.zoneY);
             end
-            dungeonInfo.zonePosition = { mapID = mapID, position = position }
+            dungeonInfo.zonePosition = { mapID = mapID, position = position } ---@diagnostic disable-line: inject-field
             self.cache[mapID][parentMapID][dungeonInfo.areaPoiID] = dungeonInfo;
         end
     end

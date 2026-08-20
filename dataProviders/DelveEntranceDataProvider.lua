@@ -1,11 +1,6 @@
 local AddOnFolderName = ... ---@type string
 local private = select(2, ...) ---@class PrivateNamespace
 
----@type Localizations
-local L = LibStub("AceLocale-3.0"):GetLocale(AddOnFolderName)
-
-local HBD = LibStub('HereBeDragons-2.0');
-
 local WDLDelveEntranceDataProviderMixin = CreateFromMixins(DelveEntranceDataProviderMixin);
 WDLDelveEntranceDataProviderMixin:Init("showDelveEntrancesOnMap");
 
@@ -43,8 +38,8 @@ function WDLDelveEntranceDataProviderMixin:RenderDelves(mapID, parentMapID)
                         Lerp(minX, maxX, x),
                         Lerp(minY, maxY, y)
                     )
-                    poiInfo.zonePosition = { mapID = mapID, position = CreateVector2D(x, y) }
-                    poiInfo.dataProvider = self
+                    poiInfo.zonePosition = { mapID = mapID, position = CreateVector2D(x, y) } ---@diagnostic disable-line: inject-field
+                    poiInfo.dataProvider = self ---@diagnostic disable-line: inject-field
 
                     self:GetMap():AcquirePin(self:GetPinTemplate(), poiInfo)
                 end
@@ -77,7 +72,17 @@ function WDLDelveEntrancePinMixin:UpdateMousePropagation() end
 function WDLDelveEntrancePinMixin:SetPassThroughButtons() end
 
 function WDLDelveEntrancePinMixin:DoesMapTypeAllowSuperTrack()
-    local mapInfo = C_Map.GetMapInfo(self:GetMap():GetMapID())
+    local uiMap = self:GetMap();
+    if uiMap == nil then
+        return
+    end
+
+    local uiMapID = uiMap:GetMapID();
+    if uiMapID == nil then
+        return
+    end
+
+    local mapInfo = C_Map.GetMapInfo(uiMapID);
     if mapInfo then
         return mapInfo.mapType >= Enum.UIMapType.Continent
     end
@@ -91,7 +96,18 @@ function WDLDelveEntrancePinMixin:OnMouseClickAction(button)
     if button == "LeftButton" then
         if not SuperTrackablePinMixin.OnMouseClickAction(self, button) then
             -- Fallback in case the above fails for whatever reason
-            local uiMapPoint = UiMapPoint.CreateFromVector2D(self:GetMap():GetMapID(), self.poiInfo.position, 0);
+
+            local uiMap = self:GetMap();
+            if uiMap == nil then
+                return
+            end
+
+            local mapID = uiMap:GetMapID();
+            if mapID == nil then
+                return
+            end
+
+            local uiMapPoint = UiMapPoint.CreateFromVector2D(mapID, self.poiInfo.position, 0);
             C_Map.SetUserWaypoint(uiMapPoint);
             C_SuperTrack.SetSuperTrackedUserWaypoint(true);
         end

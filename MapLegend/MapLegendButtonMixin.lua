@@ -1,5 +1,3 @@
-local private = select(2, ...); ---@class PrivateNamespace
-
 WDLMapLegendButtonMixin = CreateFromMixins(MapLegendButtonMixin)
 
 function WDLMapLegendButtonMixin:InitializeButton(buttonInfo, index)
