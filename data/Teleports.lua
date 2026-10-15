@@ -21,7 +21,7 @@ function TeleportMap:GetByJournalInstanceID(journalInstanceID)
 
     local cooldownInfo = C_Spell.GetSpellCooldown(foundSpellID);
     local duration = cooldownInfo and cooldownInfo.duration;
-    if not duration or duration < 3 then -- global cooldown is counted here as well, so lets just ignore anything below 3 seconds
+    if canaccessvalue(duration) and (not duration or duration < 3) then -- global cooldown is counted here as well, so lets just ignore anything below 3 seconds
         duration = nil; ---@diagnostic disable-line: cast-local-type
     end
 
