@@ -133,6 +133,10 @@ PinLocations.mapTranslationOverrides = {
     [1322] = { -- Altar of Fangs
         [2512] = { zoneX = 0.8894, zoneY = 0.9423 }, -- The Coiled Isle
     },
+    [1324] = { -- The Unbinding of Kith'ix
+        [2512] = { zoneX = 0.889, zoneY = 0.777 }, -- The Coiled Isle
+        [2509] = { zoneX = 0.475, zoneY = 0.042 }, -- Vaults of Atal'Utek
+    },
 };
 
 --- @private
@@ -345,6 +349,7 @@ PinLocations.data = {
     { journalInstanceID = 1316, areaPoiID = 8644, atlasName = "Dungeon", pos0 = 1466.65002441410, pos1 = -1805.78002929690, continentID = 2771 }, -- Nexus-Point Xenas
     { journalInstanceID = 1320, areaPoiID = 8930, atlasName = "Raid", pos0 = 5778.25000000000, pos1 = -10400.00000000000, continentID = 2916 }, -- The Venomous Abyss
     { journalInstanceID = 1322, areaPoiID = 8931, atlasName = "Dungeon", pos0 = 4914.45019531250, pos1 = -10400.20019531200, continentID = 2916 }, -- Altar of Fangs
+    { journalInstanceID = 1324, areaPoiID = 9031, atlasName = "Raid", pos0 = 6380.18701171880, pos1 = -10511.00000000000, continentID = 2916 }, -- The Unbinding of Kith'ix
 };
 
 for k, v in pairs(PinLocations.dataOverrides) do
